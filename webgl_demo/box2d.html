@@ -71,7 +71,7 @@
             var body = bodies[i];
             num += body.IsAwake();
           });
-          if ((Date.now() - lastInactivity) >= 3000*num) { // consider none active also if enough time passed
+          if ((Date.now() - lastInactivity) >= 3000*10*num/NUM) { // consider none active also if enough time passed
             lastInactivity = Date.now();
             return true;
           }
