@@ -52,9 +52,7 @@ Box2D_v2.2.1/Box2D/Dynamics/Joints/b2WeldJoint.bc \
 Box2D_v2.2.1/Box2D/Dynamics/Joints/b2WheelJoint.bc \
 Box2D_v2.2.1/Box2D/Rope/b2Rope.bc
 
-all: box2d.js
-
-# box2d.js
+all: box2d.js box2d.min.js
 
 %.bc: %.cpp
 	$(EMCC) -IBox2D_v2.2.1 $< -o $@
@@ -74,6 +72,10 @@ box2d.bc: $(OBJECTS) box2d_bindings.bc
 box2d.js: box2d.bc
 	$(EMCC) -O2 -s INLINING_LIMIT=0 --closure 0 --js-transform "python bundle.py" $< -o $@
 
+# TODO: Find out why advanced breaks us
+box2d.min.js: box2d.js
+	java -Xmx1024m -jar ~/Dev/closure-compiler-read-only/build/compiler.jar --compilation_level SIMPLE_OPTIMIZATIONS --js box2d.js --js_output_file box2d.min.js
+
 clean:
-	rm box2d.js box2d.bc $(OBJECTS) box2d_bindings.cpp box2d_bindings.bc box2d.clean.h
+	rm box2d.js box2d.min.js box2d.bc $(OBJECTS) box2d_bindings.cpp box2d_bindings.bc box2d.clean.h
 
