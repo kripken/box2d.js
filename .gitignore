@@ -1,0 +1,6 @@
+*.bc
+box2d_bindings.cpp
+box2d_bindings.js
+box2d.clean.h
+box2d_bindings.all.h
+
