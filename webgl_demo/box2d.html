@@ -1,0 +1,231 @@
+<html>
+    <head>
+      <title>Box2D/WebGL Demo</title>
+      <script src="CubicVR.min.js" type="text/javascript"></script>
+      <script src="../box2d.js" type="text/javascript"></script>
+      <style type="text/css">
+        body { background-color: #ccc; }
+      </style>
+
+      <script type="text/javascript">
+        var NUM = 15;
+        var NUMRANGE = [];
+        while (NUMRANGE.length < NUM) NUMRANGE.push(NUMRANGE.length+1);
+        var bodies = [null]; // Indexes start from 1
+
+        // Box2D-interfacing code
+
+        var gravity = new Box2D.b2Vec2(0.0, -10.0);
+
+        var world = new Box2D.b2World(gravity);
+
+        var bd_ground = new Box2D.b2BodyDef();
+        var ground = world.CreateBody(bd_ground);
+
+        var shape0 = new Box2D.b2EdgeShape();
+        shape0.Set(new Box2D.b2Vec2(-40.0, -6.0), new Box2D.b2Vec2(40.0, -6.0));
+        ground.CreateFixture(shape0, 0.0);
+
+        var size = 1.0;
+        var shape = new Box2D.b2PolygonShape();
+        shape.SetAsBox(size, size);
+
+        var ZERO = new Box2D.b2Vec2(0.0, 0.0);
+        var temp = new Box2D.b2Vec2(0.0, 0.0);
+
+        NUMRANGE.forEach(function(i) {
+          var bd = new Box2D.b2BodyDef();
+          bd.set_type(Box2D.b2_dynamicBody);
+          bd.set_position(ZERO);
+          var body = world.CreateBody(bd);
+          body.CreateFixture(shape, 5.0);
+
+          bodies.push(body);
+        });
+
+        function resetPositions() {
+          NUMRANGE.forEach(function(i) {
+            var body = bodies[i];
+            temp.Set(8*(Math.random()-0.5), 4.0 + 2.5*i);
+            body.SetTransform(temp, 0.0);
+            body.SetLinearVelocity(ZERO);
+            body.SetAwake(1);
+            body.SetActive(1);
+          });
+        }
+
+        resetPositions();
+
+        function readObject(i, data) {
+          var body = bodies[i];
+          var bpos = body.GetPosition();
+          data.x = bpos.get_x();
+          data.y = bpos.get_y();
+          data.angle = body.GetAngle();
+        }
+
+        var lastInactivity = Date.now();
+        function noneActive() {
+          var num = 0;
+          NUMRANGE.forEach(function(i) {
+            var body = bodies[i];
+            num += body.IsAwake();
+          });
+          if ((Date.now() - lastInactivity) >= 3000*num) { // consider none active also if enough time passed
+            lastInactivity = Date.now();
+            return true;
+          }
+          return false;
+        }
+
+        // Main demo code
+
+        var boxes = [];
+
+        var position = [0,0,0];
+
+        function simulate(dt) {
+          world.Step(dt, 1, 1);
+
+          var data = { x: 0, y: 0, angle: 0 };
+
+          // Read box2d data into JS objects
+          for (var i = 0; i < NUM; i++) {
+            readObject(i+1, data);
+            var renderObject = boxes[i];
+            renderObject.position[0] = data.x;
+            renderObject.position[1] = data.y;
+            renderObject.position[2] = 0;
+            renderObject.rotation = [0, 0, data.angle*180/Math.PI];
+          }
+
+          if (noneActive()) restart();
+        }
+
+        var fpsInfo = {
+          dts: 0,
+          num: 0,
+          lastHUD: Date.now()
+        };
+
+        function showFPS(dt) {
+          var now = Date.now();
+          fpsInfo.dts += dt;
+          fpsInfo.num++;
+          if (now - fpsInfo.lastHUD > 333) {
+            document.getElementById('out').innerHTML = '<b>FPS: ' + Math.ceil(1/(fpsInfo.dts/fpsInfo.num)) + '</b>';
+            fpsInfo.lastHUD = now;
+            fpsInfo.dts = 0;
+            fpsInfo.num = 0;
+          }
+        }
+
+        function restart() {
+          totalTime = 0;
+          resetPositions();
+        }
+
+        var FLOOR_SIZE = 100;
+        var FLOOR_HEIGHT = -56
+
+        // CubicVR code
+
+        function startUp() {
+          var canvas = document.getElementById("canvas");
+          canvas.width = screen.width*0.70;
+          canvas.height = screen.height*0.55;
+
+          var gl = CubicVR.GLCore.init(canvas);
+
+          if (!gl) {
+            alert("Sorry, no WebGL support :(");
+            return;
+          };
+
+          var scene = new CubicVR.Scene(canvas.width, canvas.height, 70);
+
+          var light = new CubicVR.Light({
+            type:CubicVR.enums.light.type.AREA,
+            intensity: 0.9,
+            areaCeiling: 80,
+            areaFloor: FLOOR_HEIGHT,
+            areaAxis: [15, 10],
+            distance: 60,
+            mapRes: 1024
+          });
+          scene.bindLight(light);
+          CubicVR.setSoftShadows(true);
+
+          scene.camera.position = [0, 2.4, 17];
+          scene.camera.target = [0, 2.4, 0];
+
+          var boxMaterials = NUMRANGE.map(function(i) {
+            return new CubicVR.Material({
+              textures: {
+                color: new CubicVR.Texture("cube" + ((i % 5)+1) + ".jpg")
+              }
+            });
+          });
+
+          var boxMeshes = boxMaterials.map(function(boxMaterial) {
+            return new CubicVR.primitives.box({
+              size: 2.0,
+              material: boxMaterial,
+              uvmapper: {
+                projectionMode: CubicVR.enums.uv.projection.CUBIC,
+                scale: [2, 2, 2]
+              }
+            }).calcNormals().triangulateQuads().compile().clean();
+          });
+
+          for (var i = 0; i < NUM; i++) {
+            boxes[i] = new CubicVR.SceneObject({ mesh: boxMeshes[i], position: [0, -10000, 0] });
+            scene.bindSceneObject(boxes[i], true);
+          }
+
+          var floorMaterial = new CubicVR.Material({
+            textures: {
+              color: new CubicVR.Texture("cube3.jpg")
+            }
+          });
+          var floorMesh = new  CubicVR.primitives.box({
+            size: FLOOR_SIZE,
+            material: floorMaterial,
+            uvmapper: {
+                projectionMode: CubicVR.enums.uv.projection.CUBIC,
+                scale: [4, 4, 4]
+            }
+          }).calcNormals().triangulateQuads().compile().clean();
+
+          var floor_ = new CubicVR.SceneObject({ mesh: floorMesh, position: [0, FLOOR_HEIGHT, 0] });
+          scene.bindSceneObject(floor_, true);
+
+          //var mvc = new CubicVR.MouseViewController(canvas, scene.camera);
+
+          CubicVR.MainLoop(function(timer, gl) {
+            var dt = timer.getLastUpdateSeconds();
+            simulate(dt);
+            scene.updateShadows();
+            scene.render();
+            showFPS(dt);
+          });
+        }
+      </script>
+    </head>
+    <body onload="startUp()">
+      <center>
+        <h2>ammo.js WebGL Demo</h2>
+
+        <canvas id="canvas" width="600" height="500"></canvas>
+        <br><br>
+        <div id="out">waka</div>
+        <p>
+        This is <b><a href="https://github.com/kripken/ammo.js">ammo.js</a></b>, a port of
+        the <b><a href="http://box2d.org/">Box2D physics engine</a></b> from C++ to JavaScript
+        using <b><a href="http://emscripten.org">Emscripten</a></b>. WebGL rendering in this demo is done using
+        <b><a href="https://github.com/cjcliffe/CubicVR.js/">CubicVR.js</a></b>.
+        </p>
+      </center>
+    </body>
+</html>
+
