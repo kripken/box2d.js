@@ -4,10 +4,11 @@ function clock() {
   return Date.now();
 }
 
-var DEBUG = 1;
+var DEBUG = 0;
 
 var WARMUP = 64;
 var FRAMES = 256;
+var ITERATIONS = WARMUP + FRAMES;
 
 var e_count = 40;
 
@@ -54,28 +55,24 @@ function bench() {
     x.op_add(deltaX);
   }
 
-  for (var i = 0; i < WARMUP; ++i) {
-    world.Step(1.0/60.0, 3, 3);
-  }
-
-  var times = new Array(FRAMES); 
-  for (var i = 0; i < FRAMES; ++i) {
+  var times = []
+  for (var i = 0; i < ITERATIONS; ++i) {
     var start = clock();
     world.Step(1.0/60.0, 3, 3);
     var end = clock();
-    times[i] = end - start;
+    times.push(end - start);
     if (DEBUG) print([topBody.GetPosition().get_y(), topBody.GetMass()]);
-    print(end - start);
   }
 
-  print('');
+  // Slice off the warmup frames.
+  times = times.slice(WARMUP)
+  print(times);
 
   var total = 0;
-  for (var i = 0; i < FRAMES; ++i) {
+  for (var i = 0; i < times.length; ++i) {
     total += times[i];
   }
   print(total/FRAMES);
 }
 
 bench();
-
