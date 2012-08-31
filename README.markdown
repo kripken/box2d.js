@@ -20,3 +20,29 @@ The automatically generated bindings have not been tested much beyond making sur
 
 For general notes on using the bindings, see the ammo.js project (a port of Bullet to JavaScript using Emscripten), many of the details of wrapping classes and so forth are identical.
 
+Building
+--------
+
+    % git submodule update --init
+    % make
+
+This fetches emscripten and uses it to compile a version of the Box2D source code stored within the box2d.js git. This source code has been modified to add constructors to some objects to ensure that emscripten will generate bindings for them.
+
+Using collision events
+----------------------
+
+    var world    = new Box2D.b2World(new b2Vec2(0 , 0)),
+        listener = new Box2D.b2ContactListener
+
+    Box2D.customizeVTable(listener, [{
+      original: Box2D.b2ContactListener.prototype.BeginContact,
+      replacement: function (ths, contact) {
+        c = Box2D.wrapPointer(contact, Box2D.b2Contact)
+        a = c.GetFixtureA()
+        b = c.GetFixtureB()
+
+        # now do what you wish with a and b.
+      }
+    }])
+
+    world.SetContactListener(listener)

@@ -202,8 +202,10 @@ protected:
 	friend class b2Contact;
 	friend class b2ContactManager;
 
+public:
 	b2Fixture();
 
+protected:
 	// We need separation create/destroy functions from the constructor/destructor because
 	// the destructor cannot access the allocator (no destructor arguments allowed by C++).
 	void Create(b2BlockAllocator* allocator, b2Body* body, const b2FixtureDef* def);
