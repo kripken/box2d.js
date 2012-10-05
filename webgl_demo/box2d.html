@@ -8,7 +8,7 @@
       </style>
 
       <script type="text/javascript">
-        var NUM = 15;
+        var NUM = 60;
         var NUMRANGE = [];
         while (NUMRANGE.length < NUM) NUMRANGE.push(NUMRANGE.length+1);
         var bodies = [null]; // Indexes start from 1
@@ -80,6 +80,8 @@
 
         // Main demo code
 
+        var totalTime = 0;
+
         var boxes = [];
 
         var position = [0,0,0];
@@ -99,7 +101,9 @@
             renderObject.rotation = [0, 0, data.angle*180/Math.PI];
           }
 
-          if (noneActive()) restart();
+          totalTime += dt;
+
+          if (noneActive() || totalTime >= 30) restart();
         }
 
         var fpsInfo = {
@@ -225,6 +229,7 @@
         using <b><a href="http://emscripten.org">Emscripten</a></b>. WebGL rendering in this demo is done using
         <b><a href="https://github.com/cjcliffe/CubicVR.js/">CubicVR.js</a></b>.
         </p>
+        <input type="button" onclick="restart()" value="restart">
       </center>
     </body>
 </html>
