@@ -69,6 +69,8 @@ struct b2ContactEdge
 	b2Contact* contact;		///< the contact
 	b2ContactEdge* prev;	///< the previous contact edge in the body's contact list
 	b2ContactEdge* next;	///< the next contact edge in the body's contact list
+
+  b2ContactEdge() {}
 };
 
 /// The class manages contact between two shapes. A contact exists for each overlapping

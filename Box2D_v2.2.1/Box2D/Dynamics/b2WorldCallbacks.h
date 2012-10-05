@@ -81,6 +81,7 @@ struct b2ContactImpulse
 class b2ContactListener
 {
 public:
+  b2ContactListener() {}
 	virtual ~b2ContactListener() {}
 
 	/// Called when two fixtures begin to touch.

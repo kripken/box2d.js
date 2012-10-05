@@ -4,4 +4,4 @@ box2d_bindings.js
 box2d.clean.h
 box2d_bindings.all.h
 bindings.out
-
+/Makefile.local
