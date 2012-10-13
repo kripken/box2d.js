@@ -64,6 +64,7 @@ all: box2d.js
 %.bc: %.cpp
 	$(EMCC) -IBox2D_v2.2.1 $< -o $@
 
+# Note: might need -xc++ on some compiler versions (no space)
 box2d.clean.h:
 	cpp -x c++ -DEM_NO_LIBCPP -IBox2D_v2.2.1 root.h > box2d.clean.h
 
