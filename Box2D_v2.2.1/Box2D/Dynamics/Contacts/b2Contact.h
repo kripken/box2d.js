@@ -63,6 +63,7 @@ struct b2ContactRegister
 /// is an edge. A contact edge belongs to a doubly linked list
 /// maintained in each attached body. Each contact has two contact
 /// nodes, one for each attached body.
+// emscripten - b2ContactEdge: add constructor
 struct b2ContactEdge
 {
 	b2Body* other;			///< provides quick access to the other body attached.
