@@ -27,6 +27,7 @@
 /// can violate the constraint slightly. The joint translation is zero
 /// when the local anchor points coincide in world space. Using local
 /// anchors and a local axis helps when saving and loading a game.
+// emscripten - b2PrismaticJointDef: add functions to set/get base class members
 struct b2PrismaticJointDef : public b2JointDef
 {
 	b2PrismaticJointDef()
@@ -77,12 +78,21 @@ struct b2PrismaticJointDef : public b2JointDef
 
 	/// The desired motor speed in radians per second.
 	float32 motorSpeed;
+
+	// to generate javascript bindings
+	void set_bodyA(b2Body* b) { bodyA = b; }
+	void set_bodyB(b2Body* b) { bodyB = b; }
+	void set_collideConnected(bool b) { collideConnected = b; }
+	b2Body* get_bodyA(b2Body* b) { return bodyA; }
+	b2Body* get_bodyB(b2Body* b) { return bodyB; }
+	bool get_collideConnected(bool b) { return collideConnected; }
 };
 
 /// A prismatic joint. This joint provides one degree of freedom: translation
 /// along an axis fixed in bodyA. Relative rotation is prevented. You can
 /// use a joint limit to restrict the range of motion and a joint motor to
 /// drive the motion or to model joint friction.
+// emscripten - b2PrismaticJoint: make constructor public
 class b2PrismaticJoint : public b2Joint
 {
 public:
@@ -147,10 +157,11 @@ public:
 	/// Dump to b2Log
 	void Dump();
 
+	b2PrismaticJoint(const b2PrismaticJointDef* def);
+
 protected:
 	friend class b2Joint;
 	friend class b2GearJoint;
-	b2PrismaticJoint(const b2PrismaticJointDef* def);
 
 	void InitVelocityConstraints(const b2SolverData& data);
 	void SolveVelocityConstraints(const b2SolverData& data);

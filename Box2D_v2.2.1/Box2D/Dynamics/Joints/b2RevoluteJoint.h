@@ -32,6 +32,7 @@
 /// 1. you might not know where the center of mass will be.
 /// 2. if you add/remove shapes from a body and recompute the mass,
 ///    the joints will be broken.
+// emscripten - b2RevoluteJointDef: add functions to set/get base class members
 struct b2RevoluteJointDef : public b2JointDef
 {
 	b2RevoluteJointDef()
@@ -79,6 +80,14 @@ struct b2RevoluteJointDef : public b2JointDef
 	/// The maximum motor torque used to achieve the desired motor speed.
 	/// Usually in N-m.
 	float32 maxMotorTorque;
+
+	// to generate javascript bindings
+	void set_bodyA(b2Body* b) { bodyA = b; }
+	void set_bodyB(b2Body* b) { bodyB = b; }
+	void set_collideConnected(bool b) { collideConnected = b; }
+	b2Body* get_bodyA(b2Body* b) { return bodyA; }
+	b2Body* get_bodyB(b2Body* b) { return bodyB; }
+	bool get_collideConnected(bool b) { return collideConnected; }
 };
 
 /// A revolute joint constrains two bodies to share a common point while they
@@ -87,6 +96,7 @@ struct b2RevoluteJointDef : public b2JointDef
 /// a joint limit that specifies a lower and upper angle. You can use a motor
 /// to drive the relative rotation about the shared point. A maximum motor torque
 /// is provided so that infinite forces are not generated.
+// emscripten - b2RevoluteJoint: make constructor public
 class b2RevoluteJoint : public b2Joint
 {
 public:
@@ -154,12 +164,12 @@ public:
 	/// Dump to b2Log.
 	void Dump();
 
+	b2RevoluteJoint(const b2RevoluteJointDef* def);
+
 protected:
 	
 	friend class b2Joint;
 	friend class b2GearJoint;
-
-	b2RevoluteJoint(const b2RevoluteJointDef* def);
 
 	void InitVelocityConstraints(const b2SolverData& data);
 	void SolveVelocityConstraints(const b2SolverData& data);

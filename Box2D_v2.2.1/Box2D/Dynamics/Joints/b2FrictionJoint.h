@@ -22,6 +22,7 @@
 #include <Box2D/Dynamics/Joints/b2Joint.h>
 
 /// Friction joint definition.
+// emscripten - b2FrictionJointDef: add functions to set/get base class members
 struct b2FrictionJointDef : public b2JointDef
 {
 	b2FrictionJointDef()
@@ -48,10 +49,19 @@ struct b2FrictionJointDef : public b2JointDef
 
 	/// The maximum friction torque in N-m.
 	float32 maxTorque;
+
+	// to generate javascript bindings
+	void set_bodyA(b2Body* b) { bodyA = b; }
+	void set_bodyB(b2Body* b) { bodyB = b; }
+	void set_collideConnected(bool b) { collideConnected = b; }
+	b2Body* get_bodyA(b2Body* b) { return bodyA; }
+	b2Body* get_bodyB(b2Body* b) { return bodyB; }
+	bool get_collideConnected(bool b) { return collideConnected; }
 };
 
 /// Friction joint. This is used for top-down friction.
 /// It provides 2D translational friction and angular friction.
+// emscripten - b2FrictionJoint: make constructor public
 class b2FrictionJoint : public b2Joint
 {
 public:
@@ -82,11 +92,11 @@ public:
 	/// Dump joint to dmLog
 	void Dump();
 
+	b2FrictionJoint(const b2FrictionJointDef* def);
+
 protected:
 
 	friend class b2Joint;
-
-	b2FrictionJoint(const b2FrictionJointDef* def);
 
 	void InitVelocityConstraints(const b2SolverData& data);
 	void SolveVelocityConstraints(const b2SolverData& data);

@@ -160,8 +160,11 @@ struct b2RayCastOutput
 };
 
 /// An axis aligned bounding box.
+// emscripten - b2AABB: add constructor
 struct b2AABB
 {
+	b2AABB() {}
+
 	/// Verify that the bounds are sorted.
 	bool IsValid() const;
 
