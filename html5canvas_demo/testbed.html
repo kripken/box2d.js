@@ -33,8 +33,13 @@
             <h2>Emscripten Box2D demo</h2>
             This demo uses JavaScript generated from the Box2D C++ source code by the <a href="https://github.com/kripken/emscripten/wiki">emscripten</a> compiler.<br>
             See <a href="https://github.com/kripken/box2d.js">https://github.com/kripken/box2d.js</a> for more details.<br>
-            <br>
-            <div style="margin:auto;width:640px;padding:2px;border:1px solid #888;text-align:left">
+            <br>            
+            <!--
+                If you change the size of the canvas, you'll also need to change 
+                the value of 'viewCenterPixel' in embox2d-html5canvas-testbed.js
+            -->
+            <div style="margin:auto;width:640px;padding:2px;border:1px solid #888;text-align:left">            
+            
                 <!--<canvas id="canvas" width="480" height="320" tabindex='1'></canvas>-->
                 <canvas id="canvas" width="640" height="480" tabindex='1'></canvas>
                 <div style="width:636px;padding:2px;background-color:#ddd">
