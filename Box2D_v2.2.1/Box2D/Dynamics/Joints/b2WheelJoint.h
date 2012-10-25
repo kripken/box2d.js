@@ -27,6 +27,7 @@
 /// can violate the constraint slightly. The joint translation is zero
 /// when the local anchor points coincide in world space. Using local
 /// anchors and a local axis helps when saving and loading a game.
+// emscripten - b2WheelJointDef: add functions to set/get base class members
 struct b2WheelJointDef : public b2JointDef
 {
 	b2WheelJointDef()
@@ -69,6 +70,14 @@ struct b2WheelJointDef : public b2JointDef
 
 	/// Suspension damping ratio, one indicates critical damping
 	float32 dampingRatio;
+
+	// to generate javascript bindings
+	void set_bodyA(b2Body* b) { bodyA = b; }
+	void set_bodyB(b2Body* b) { bodyB = b; }
+	void set_collideConnected(bool b) { collideConnected = b; }
+	b2Body* get_bodyA(b2Body* b) { return bodyA; }
+	b2Body* get_bodyB(b2Body* b) { return bodyB; }
+	bool get_collideConnected(bool b) { return collideConnected; }
 };
 
 /// A wheel joint. This joint provides two degrees of freedom: translation
@@ -76,6 +85,7 @@ struct b2WheelJointDef : public b2JointDef
 /// joint limit to restrict the range of motion and a joint motor to drive
 /// the rotation or to model rotational friction.
 /// This joint is designed for vehicle suspensions.
+// emscripten - b2WheelJoint: make constructor public
 class b2WheelJoint : public b2Joint
 {
 public:
@@ -132,10 +142,11 @@ public:
 	/// Dump to b2Log
 	void Dump();
 
+	b2WheelJoint(const b2WheelJointDef* def);
+
 protected:
 
 	friend class b2Joint;
-	b2WheelJoint(const b2WheelJointDef* def);
 
 	void InitVelocityConstraints(const b2SolverData& data);
 	void SolveVelocityConstraints(const b2SolverData& data);

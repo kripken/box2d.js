@@ -27,6 +27,7 @@
 /// so that the initial configuration can violate the constraint
 /// slightly. This helps when saving and loading a game.
 /// @warning Do not use a zero or short length.
+// emscripten - b2DistanceJointDef: add functions to set/get base class members
 struct b2DistanceJointDef : public b2JointDef
 {
 	b2DistanceJointDef()
@@ -59,11 +60,20 @@ struct b2DistanceJointDef : public b2JointDef
 
 	/// The damping ratio. 0 = no damping, 1 = critical damping.
 	float32 dampingRatio;
+
+	// to generate javascript bindings
+	void set_bodyA(b2Body* b) { bodyA = b; }
+	void set_bodyB(b2Body* b) { bodyB = b; }
+	void set_collideConnected(bool b) { collideConnected = b; }
+	b2Body* get_bodyA(b2Body* b) { return bodyA; }
+	b2Body* get_bodyB(b2Body* b) { return bodyB; }
+	bool get_collideConnected(bool b) { return collideConnected; }
 };
 
 /// A distance joint constrains two points on two bodies
 /// to remain at a fixed distance from each other. You can view
 /// this as a massless, rigid rod.
+// emscripten - b2DistanceJoint: make constructor public
 class b2DistanceJoint : public b2Joint
 {
 public:
@@ -101,10 +111,11 @@ public:
 	/// Dump joint to dmLog
 	void Dump();
 
+	b2DistanceJoint(const b2DistanceJointDef* data);
+
 protected:
 
 	friend class b2Joint;
-	b2DistanceJoint(const b2DistanceJointDef* data);
 
 	void InitVelocityConstraints(const b2SolverData& data);
 	void SolveVelocityConstraints(const b2SolverData& data);

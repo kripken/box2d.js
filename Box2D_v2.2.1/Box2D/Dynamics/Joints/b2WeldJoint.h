@@ -24,6 +24,7 @@
 /// Weld joint definition. You need to specify local anchor points
 /// where they are attached and the relative body angle. The position
 /// of the anchor points is important for computing the reaction torque.
+// emscripten - b2WeldJointDef: add functions to set/get base class members
 struct b2WeldJointDef : public b2JointDef
 {
 	b2WeldJointDef()
@@ -55,10 +56,19 @@ struct b2WeldJointDef : public b2JointDef
 
 	/// The damping ratio. 0 = no damping, 1 = critical damping.
 	float32 dampingRatio;
+
+	// to generate javascript bindings
+	void set_bodyA(b2Body* b) { bodyA = b; }
+	void set_bodyB(b2Body* b) { bodyB = b; }
+	void set_collideConnected(bool b) { collideConnected = b; }
+	b2Body* get_bodyA(b2Body* b) { return bodyA; }
+	b2Body* get_bodyB(b2Body* b) { return bodyB; }
+	bool get_collideConnected(bool b) { return collideConnected; }
 };
 
 /// A weld joint essentially glues two bodies together. A weld joint may
 /// distort somewhat because the island constraint solver is approximate.
+// emscripten - b2WeldJoint: make constructor public
 class b2WeldJoint : public b2Joint
 {
 public:
@@ -88,11 +98,11 @@ public:
 	/// Dump to b2Log
 	void Dump();
 
+	b2WeldJoint(const b2WeldJointDef* def);
+
 protected:
 
 	friend class b2Joint;
-
-	b2WeldJoint(const b2WeldJointDef* def);
 
 	void InitVelocityConstraints(const b2SolverData& data);
 	void SolveVelocityConstraints(const b2SolverData& data);

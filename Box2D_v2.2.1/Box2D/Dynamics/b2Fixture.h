@@ -104,6 +104,7 @@ struct b2FixtureProxy
 /// such as friction, collision filters, etc.
 /// Fixtures are created via b2Body::CreateFixture.
 /// @warning you cannot reuse fixtures.
+// emscripten - b2Fixture: make constructor public
 class b2Fixture
 {
 public:
