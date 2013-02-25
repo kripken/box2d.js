@@ -58,7 +58,7 @@ Usage (non-embind bindings)
 
 <span style="color:#900">The current bindings are likely to be superceded by the new "embind" bindings in the incoming branch, which fixes a lot of limitations in the current bindings. The following section explains some of the basics of using the non-embind bindings.</span>
 
-<span style="color:#f00;font-weight:bold">Note:</span> To improve readability all code snippets below assume that everything in the 'Box2D' namespace has been made available! (Check the 'using' function in demos/html5canvas_demo /embox2d-helpers.js for details.)
+<span style="color:#f00;font-weight:bold">Note:</span> To improve readability all code snippets below assume that everything in the 'Box2D' namespace has been made available! (Check the 'using' function in demos/html5canvas_demo/embox2d-helpers.js for details.)
 
 ### Class member variable access
 
