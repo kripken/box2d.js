@@ -163,18 +163,14 @@
           scene.camera.position = [0, 2.4, 17];
           scene.camera.target = [0, 2.4, 0];
 
-          var boxMaterials = NUMRANGE.map(function(i) {
-            return new CubicVR.Material({
-              textures: {
-                color: new CubicVR.Texture("cube" + ((i % 5)+1) + ".jpg")
-              }
-            });
-          });
-
-          var boxMeshes = boxMaterials.map(function(boxMaterial) {
+          var boxMeshes = NUMRANGE.map(function(i) {
             return new CubicVR.primitives.box({
               size: 2.0,
-              material: boxMaterial,
+              material: new CubicVR.Material({
+                textures: {
+                  color: new CubicVR.Texture("cube" + ((i % 5)+1) + ".jpg")
+                }
+              }),
               uvmapper: {
                 projectionMode: CubicVR.enums.uv.projection.CUBIC,
                 scale: [2, 2, 2]
