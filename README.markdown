@@ -2,7 +2,7 @@ box2d.js
 ========
 
 
-**Demo: http://syntensity.com/static/box2d.html**
+**Demo: http://kripken.github.io/box2d.js/webgl_demo/box2d.html**
 
 **Example code to give you an idea of the API: https://github.com/kripken/box2d.js/blob/master/webgl_demo/box2d.html#L14**
 
