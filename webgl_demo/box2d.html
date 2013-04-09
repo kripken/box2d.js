@@ -8,7 +8,7 @@
       </style>
 
       <script type="text/javascript">
-        var NUM = 60;
+        var NUM = 300;
         var NUMRANGE = [];
         while (NUMRANGE.length < NUM) NUMRANGE.push(NUMRANGE.length+1);
         var bodies = [null]; // Indexes start from 1
@@ -46,7 +46,7 @@
         function resetPositions() {
           NUMRANGE.forEach(function(i) {
             var body = bodies[i];
-            temp.Set(8*(Math.random()-0.5), 4.0 + 2.5*i);
+            temp.Set(25*(Math.random()-0.5), 2.0 + 1.5*i);
             body.SetTransform(temp, 0.0);
             body.SetLinearVelocity(ZERO);
             body.SetAwake(1);
