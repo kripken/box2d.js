@@ -65,15 +65,13 @@
         }
 
         var lastInactivity = Date.now();
-        function noneActive() {
-          var num = 0;
-          NUMRANGE.forEach(function(i) {
-            var body = bodies[i];
-            num += body.IsAwake();
-          });
-          if ((Date.now() - lastInactivity) >= 3000*10*num/NUM) { // consider none active also if enough time passed
-            lastInactivity = Date.now();
-            return true;
+        function someInactive() {
+          var asleep = 0;
+          for (var i = 0; i < NUM; i++) {
+            if (!bodies[i+1].IsAwake()) {
+              asleep++;
+              if (asleep == 3) return true;
+            }
           }
           return false;
         }
@@ -103,7 +101,7 @@
 
           totalTime += dt;
 
-          if (noneActive() || totalTime >= 30) restart();
+          if (someInactive() || totalTime >= 30) restart();
         }
 
         var fpsInfo = {
