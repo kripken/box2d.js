@@ -107,15 +107,23 @@
         var fpsInfo = {
           dts: 0,
           num: 0,
-          lastHUD: Date.now()
+          lastHUD: Date.now(),
+          allNum: 0,
+          all: 0,
         };
 
+        var outElement = null;
         function showFPS(dt) {
+          if (!outElement) outElement = document.getElementById('out');
           var now = Date.now();
           fpsInfo.dts += dt;
           fpsInfo.num++;
-          if (now - fpsInfo.lastHUD > 333) {
-            document.getElementById('out').innerHTML = '<b>FPS: ' + Math.ceil(1/(fpsInfo.dts/fpsInfo.num)) + '</b>';
+          if (now - fpsInfo.lastHUD > 500) {
+            var curr = 1/(fpsInfo.dts/fpsInfo.num);
+            fpsInfo.allNum++;
+            var alpha = Math.min(1, 2/fpsInfo.allNum);
+            fpsInfo.all = alpha*curr + (1-alpha)*fpsInfo.all;
+            outElement.value = Math.round(curr) + ' / ' + Math.round(fpsInfo.all);
             fpsInfo.lastHUD = now;
             fpsInfo.dts = 0;
             fpsInfo.num = 0;
@@ -217,7 +225,7 @@
 
         <canvas id="canvas" width="600" height="500"></canvas>
         <br><br>
-        <div id="out">waka</div>
+        <div>Physics FPS (current / stable): <input type="text" id="out" readonly="1" size="7"></div>
         <p>
         This is <b><a href="https://github.com/kripken/box2d.js">box2d.js</a></b>, a port of
         the <b><a href="http://box2d.org/">Box2D physics engine</a></b> from C++ to JavaScript
