@@ -161,8 +161,9 @@
           scene.camera.position = [0, 2.4, 17];
           scene.camera.target = [0, 2.4, 0];
 
-          var boxMeshes = NUMRANGE.map(function(i) {
-            return new CubicVR.primitives.box({
+          var boxMeshes = [];
+          for (var i = 0; i < 5; i++) {
+            boxMeshes[i] = new CubicVR.primitives.box({
               size: 2.0,
               material: new CubicVR.Material({
                 textures: {
@@ -174,10 +175,10 @@
                 scale: [2, 2, 2]
               }
             }).calcNormals().triangulateQuads().compile().clean();
-          });
+          }
 
           for (var i = 0; i < NUM; i++) {
-            boxes[i] = new CubicVR.SceneObject({ mesh: boxMeshes[i], position: [0, -10000, 0] });
+            boxes[i] = new CubicVR.SceneObject({ mesh: boxMeshes[i%5], position: [0, -10000, 0] });
             scene.bindSceneObject(boxes[i], true);
           }
 
