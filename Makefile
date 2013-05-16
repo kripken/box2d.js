@@ -1,13 +1,11 @@
 # Makefile for generating a Box2D library using Emscripten.
 
 # You'll likely need to edit these for your particular directory layout.
-LLVM=/usr/bin
 EMSCRIPTEN=$(PWD)/emscripten
 
 # For placing path overrides.. this path is hidden from git
 -include Makefile.local
 
-ENV=LLVM=$(LLVM) EMSCRIPTEN=$(EMSCRIPTEN)
 EMCC=$(ENV) $(EMSCRIPTEN)/emcc
 PYTHON=$(ENV) python
 
@@ -75,7 +73,7 @@ box2d_bindings.bc: box2d_bindings.cpp
 	$(EMCC) -IBox2D_v2.2.1 -include root.h $< -o $@
 
 box2d.bc: $(OBJECTS) box2d_bindings.bc
-	$(LLVM)/llvm-link -o $@ $(OBJECTS) box2d_bindings.bc
+	$(EMCC) -o $@ $(OBJECTS) box2d_bindings.bc
 
 box2d.js: box2d.bc
 	$(EMCC) -O2 -s ASM_JS=1 -s EXPORT_BINDINGS=1 -s RESERVED_FUNCTION_POINTERS=20 --js-transform "python bundle.py" $< -o $@
