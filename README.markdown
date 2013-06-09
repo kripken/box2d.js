@@ -16,7 +16,7 @@ Discussion takes place on IRC at #emscripten on Mozilla's server (irc.mozilla.or
 Details
 -------
 
-The automatically generated bindings have been tested to the extent that can be found in the examples in the 'testbed'. For general notes on using the bindings, see the ammo.js project (a port of Bullet to JavaScript using Emscripten), many of the details of wrapping classes and so forth are identical.
+The automatically generated bindings have been tested to the extent that can be found in the examples in the 'testbed'. For general notes on using the bindings, see the [ammo.js](https://github.com/kripken/ammo.js) project (a port of Bullet to JavaScript using Emscripten), many of the details of wrapping classes and so forth are identical.
 
 It seems to be running ok on at least the following:
 
