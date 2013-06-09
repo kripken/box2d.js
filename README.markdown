@@ -16,7 +16,7 @@ Discussion takes place on IRC at #emscripten on Mozilla's server (irc.mozilla.or
 Details
 -------
 
-The automatically generated bindings have been tested to the extent that can be found in the examples in the 'testbed'. For general notes on using the bindings, see the ammo.js project (a port of Bullet to JavaScript using Emscripten), many of the details of wrapping classes and so forth are identical.
+The automatically generated bindings have been tested to the extent that can be found in the examples in the 'testbed'. For general notes on using the bindings, see the [ammo.js](https://github.com/kripken/ammo.js) project (a port of Bullet to JavaScript using Emscripten), many of [the details](https://github.com/kripken/ammo.js#bindings-api) of wrapping classes and so forth are identical.
 
 It seems to be running ok on at least the following:
 
@@ -32,18 +32,18 @@ It seems to be running ok on at least the following:
 Testbed
 -------
 
-The html5canvas_demo folder contains an example web page and script files to reproduce the original Box2D testbed, with similar controls and features. 
+The html5canvas_demo folder contains an example web page and script files to reproduce the original Box2D testbed, with similar controls and features.
 
 **Demo: http://www.iforce2d.net/embox2d/testbed.html**
 
 Like the original C++ version, the testbed is set up so that adding another test scene is easy. Look in the tests folder and find the template.js file....
 
-1. Copy template.js and rename it. 
-2. In the renamed file, replace all occurrences of 'embox2dTest_template' with your test name. 
-3. Fill in the setup function. 
-4. Optionally, fill in the other functions. 
+1. Copy template.js and rename it.
+2. In the renamed file, replace all occurrences of 'embox2dTest_template' with your test name.
+3. Fill in the setup function.
+4. Optionally, fill in the other functions.
 5. Include the new file at the beginning of testbed.html with the other tests.
-6. Add the new test option to the "testNumber" select box in test.html 
+6. Add the new test option to the "testNumber" select box in test.html
 
 Building
 --------
@@ -165,7 +165,7 @@ Example revolute joint:
 The customizeVTable function can be used to replace the functions of a b2Draw object:
 
     var debugDraw = new Box2D.b2Draw();
-            
+
     Box2D.customizeVTable(debugDraw, [{
         original: Box2D.b2Draw.prototype.DrawSegment,
         replacement:
@@ -179,7 +179,7 @@ The customizeVTable function can be used to replace the functions of a b2Draw ob
 
 The first parameter given to the callback function (`thsPtr` in the example above) will be the object emscripten uses to store the class itself and can be ignored. The other parameters will also be pointers to data inside emscripten's innards, so you'll need to wrap them to get the data type you are looking for. Here are the two functions mentioned above, as an example of how you would wrap the passed `b2Color` and `b2Vec2` parameters and use them in your drawing. This example is to draw on a HTML5 canvas:
 
-    function setColorFromDebugDrawCallback( colorPtr ) {            
+    function setColorFromDebugDrawCallback( colorPtr ) {
         var color = Box2D.wrapPointer( colorPtr, b2Color );
         var red = (color.get_r() * 255) | 0;
         var green = (color.get_g() * 255) | 0;
@@ -204,13 +204,13 @@ Accessing the vertex arrays passed to other functions such as DrawPolygon are so
 
 ### Using collision events
 
-Contact listener callbacks are also implemented with customizeVTable. 
+Contact listener callbacks are also implemented with customizeVTable.
 
     listener = new b2ContactListener();
 
     Box2D.customizeVTable(listener, [{
         original: Box2D.b2ContactListener.prototype.BeginContact,
-        replacement: 
+        replacement:
             function (thsPtr, contactPtr) {
                 var contact = Box2D.wrapPointer( contactPtr, b2Contact );
                 var fixtureA = contact.GetFixtureA();
@@ -227,7 +227,7 @@ Contact listener callbacks are also implemented with customizeVTable.
 Callbacks for other uses such as world querying and raycasting can also be implemented with customizeVTable. Here is the callback used in the 'testbed' to find the fixture that the mouse cursor is over when the left button is clicked:
 
     myQueryCallback = new b2QueryCallback();
-    
+
     Box2D.customizeVTable(myQueryCallback, [{
         original: Box2D.b2QueryCallback.prototype.ReportFixture,
         replacement:
@@ -236,7 +236,7 @@ Callbacks for other uses such as world querying and raycasting can also be imple
                 var fixture = Box2D.wrapPointer( fixturePtr, b2Fixture );
                 if ( fixture.GetBody().GetType() != Box2D.b2_dynamicBody ) //mouse cannot drag static bodies around
                     return true;
-                // at this point we know the mouse is inside the AABB of this fixture, 
+                // at this point we know the mouse is inside the AABB of this fixture,
                 // but we need to check if it's actually inside the fixture as well
                 if ( ! fixture.TestPoint( ths.m_point ) )
                     return true;
