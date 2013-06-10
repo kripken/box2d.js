@@ -48,10 +48,9 @@ Like the original C++ version, the testbed is set up so that adding another test
 Building
 --------
 
-    % git submodule update --init
-    % make
+    % /PATH/TO/EMSCRIPTEN emmake make
 
-This fetches emscripten and uses it to compile a version of the Box2D source code stored within the box2d.js git. This source code has been modified to add constructors to some objects to ensure that emscripten will generate bindings for them.
+This runs emscripten and uses it to compile a version of the Box2D source code stored within the box2d.js git. This source code has been modified to add constructors to some objects to ensure that emscripten will generate bindings for them.
 
 Usage (non-embind bindings)
 -----
