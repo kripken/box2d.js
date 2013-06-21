@@ -72,7 +72,7 @@ box2d.bc: $(OBJECTS) box2d_bindings.bc
 	$(CXX) -o $@ $(OBJECTS) box2d_bindings.bc
 
 box2d.js: box2d.bc
-	$(CXX) -O2 -s ASM_JS=1 -s EXPORT_BINDINGS=1 -s RESERVED_FUNCTION_POINTERS=20 --js-transform "python bundle.py" $< -o $@
+	$(CXX) -O2 -s EXPORT_BINDINGS=1 -s RESERVED_FUNCTION_POINTERS=20 --js-transform "python bundle.py" --closure 1 $< -o $@
 
 clean:
 	rm -f box2d.js box2d.bc $(OBJECTS) box2d_bindings.cpp box2d_bindings.bc box2d.clean.h
