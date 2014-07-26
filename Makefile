@@ -5,6 +5,8 @@
 
 PYTHON=$(ENV) python
 
+EMSCRIPTEN=/Users/mlogan/dev/emsdk-portable/emscripten/1.21.0
+
 O = Box2D_v2.2.1/Box2D
 OBJECTS = \
 $(O)/Collision/b2BroadPhase.bc \
@@ -60,7 +62,9 @@ all: box2d.js
 
 # Note: might need -xc++ on some compiler versions (no space)
 box2d.clean.h:
-	cpp -x c++ -DEM_NO_LIBCPP -IBox2D_v2.2.1 root.h > box2d.clean.h
+	cpp -xc++ -DEM_NO_LIBCPP -IBox2D_v2.2.1 root.h > box2d.clean.h
+	# CppHeaderParser doesn't like Xcode's cpp output: this fixes it.
+	sed -i -e 's/__signed/signed/g;s/__const/const/g' box2d.clean.h
 
 box2d_bindings.cpp: box2d.clean.h
 	$(PYTHON) $(EMSCRIPTEN)/tools/bindings_generator.py box2d_bindings box2d.clean.h -- '{ "ignored": "b2Shape::m_type,b2BroadPhase::RayCast,b2BroadPhase::UpdatePairs,b2BroadPhase::Query,b2DynamicTree::RayCast,b2DynamicTree::Query,b2ChainShape::m_nextVertex,b2ChainShape::m_hasNextVertex,b2EdgeShape::m_hasVertex3,b2EdgeShape::m_vertex2,b2EdgeShape::m_vertex3,b2Mat22,b2Mat33" }' > bindings.out
