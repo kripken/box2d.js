@@ -22,9 +22,7 @@
 #include <Box2D/Common/b2Settings.h>
 #include <Box2D/Collision/b2Collision.h>
 #include <Box2D/Collision/b2DynamicTree.h>
-#ifndef EM_NO_LIBCPP
 #include <algorithm>
-#endif
 
 struct b2Pair
 {

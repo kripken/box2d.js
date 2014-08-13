@@ -19,13 +19,8 @@
 #ifndef B2_SETTINGS_H
 #define B2_SETTINGS_H
 
-#ifdef EM_NO_LIBCPP
-#include <assert.h>
-#include <math.h>
-#else
 #include <cassert>
 #include <cmath>
-#endif
 
 #define B2_NOT_USED(x) ((void)(x))
 #define b2Assert(A) assert(A)

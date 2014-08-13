@@ -25,7 +25,6 @@ const float32 b2_minPulleyLength = 2.0f;
 
 /// Pulley joint definition. This requires two ground anchors,
 /// two dynamic body anchor points, and a pulley ratio.
-// emscripten - b2PulleyJointDef: add functions to set/get base class members
 struct b2PulleyJointDef : public b2JointDef
 {
 	b2PulleyJointDef()
@@ -67,14 +66,6 @@ struct b2PulleyJointDef : public b2JointDef
 
 	/// The pulley ratio, used to simulate a block-and-tackle.
 	float32 ratio;
-
-	// to generate javascript bindings
-	void set_bodyA(b2Body* b) { bodyA = b; }
-	void set_bodyB(b2Body* b) { bodyB = b; }
-	void set_collideConnected(bool b) { collideConnected = b; }
-	b2Body* get_bodyA(b2Body* b) { return bodyA; }
-	b2Body* get_bodyB(b2Body* b) { return bodyB; }
-	bool get_collideConnected(bool b) { return collideConnected; }
 };
 
 /// The pulley joint is connected to two bodies and two fixed ground points.
@@ -85,7 +76,6 @@ struct b2PulleyJointDef : public b2JointDef
 /// work better when combined with prismatic joints. You should also cover the
 /// the anchor points with static shapes to prevent one side from going to
 /// zero length.
-// emscripten - b2PulleyJoint: make constructor public
 class b2PulleyJoint : public b2Joint
 {
 public:
@@ -113,11 +103,10 @@ public:
 	/// Dump joint to dmLog
 	void Dump();
 
-	b2PulleyJoint(const b2PulleyJointDef* data);
-
 protected:
 
 	friend class b2Joint;
+	b2PulleyJoint(const b2PulleyJointDef* data);
 
 	void InitVelocityConstraints(const b2SolverData& data);
 	void SolveVelocityConstraints(const b2SolverData& data);
