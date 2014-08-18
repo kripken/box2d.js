@@ -82,61 +82,37 @@ function drawTransform(transform) {
 }
 
 function getCanvasDebugDraw() {
-    var debugDraw = new Box2D.b2Draw();
-            
-    Box2D.customizeVTable(debugDraw, [{
-    original: Box2D.b2Draw.prototype.DrawSegment,
-    replacement:
-        function(ths, vert1, vert2, color) {                    
-            setColorFromDebugDrawCallback(color);                    
-            drawSegment(vert1, vert2);
-        }
-    }]);
-    
-    Box2D.customizeVTable(debugDraw, [{
-    original: Box2D.b2Draw.prototype.DrawPolygon,
-    replacement:
-        function(ths, vertices, vertexCount, color) {                    
-            setColorFromDebugDrawCallback(color);
-            drawPolygon(vertices, vertexCount, false);                    
-        }
-    }]);
-    
-    Box2D.customizeVTable(debugDraw, [{
-    original: Box2D.b2Draw.prototype.DrawSolidPolygon,
-    replacement:
-        function(ths, vertices, vertexCount, color) {                    
-            setColorFromDebugDrawCallback(color);
-            drawPolygon(vertices, vertexCount, true);                    
-        }
-    }]);
-    
-    Box2D.customizeVTable(debugDraw, [{
-    original: Box2D.b2Draw.prototype.DrawCircle,
-    replacement:
-        function(ths, center, radius, color) {                    
-            setColorFromDebugDrawCallback(color);
-            var dummyAxis = b2Vec2(0,0);
-            drawCircle(center, radius, dummyAxis, false);
-        }
-    }]);
-    
-    Box2D.customizeVTable(debugDraw, [{
-    original: Box2D.b2Draw.prototype.DrawSolidCircle,
-    replacement:
-        function(ths, center, radius, axis, color) {                    
-            setColorFromDebugDrawCallback(color);
-            drawCircle(center, radius, axis, true);
-        }
-    }]);
-    
-    Box2D.customizeVTable(debugDraw, [{
-    original: Box2D.b2Draw.prototype.DrawTransform,
-    replacement:
-        function(ths, transform) {
-            drawTransform(transform);
-        }
-    }]);
-    
+    var debugDraw = new Box2D.JSDraw();
+
+    debugDraw.DrawSegment = function(vert1, vert2, color) {
+        setColorFromDebugDrawCallback(color);
+        drawSegment(vert1, vert2);
+    };
+
+    debugDraw.DrawPolygon = function(vertices, vertexCount, color) {
+        setColorFromDebugDrawCallback(color);
+        drawPolygon(vertices, vertexCount, false);
+    };
+
+    debugDraw.DrawSolidPolygon = function(vertices, vertexCount, color) {
+        setColorFromDebugDrawCallback(color);
+        drawPolygon(vertices, vertexCount, true);
+    };
+
+    debugDraw.DrawCircle = function(center, radius, color) {
+        setColorFromDebugDrawCallback(color);
+        var dummyAxis = b2Vec2(0,0);
+        drawCircle(center, radius, dummyAxis, false);
+    };
+
+    debugDraw.DrawSolidCircle = function(center, radius, axis, color) {
+        setColorFromDebugDrawCallback(color);
+        drawCircle(center, radius, axis, true);
+    };
+
+    debugDraw.DrawTransform = function(transform) {
+        drawTransform(transform);
+    };
+
     return debugDraw;
 }
