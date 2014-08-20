@@ -52,10 +52,12 @@ Building
 
 This runs emscripten and uses it to compile a version of the Box2D source code stored within the box2d.js git. This source code has been modified to add constructors to some objects to ensure that emscripten will generate bindings for them.
 
-Usage (non-embind bindings)
+Currently, you need to use the incoming branch of emscripten to build box2d.js. See [http://kripken.github.io/emscripten-site/docs/building_from_source/building_emscripten_from_source_using_the_sdk.html#building-emscripten-from-source-using-the-sdk](http://kripken.github.io/emscripten-site/docs/building_from_source/building_emscripten_from_source_using_the_sdk.html#building-emscripten-from-source-using-the-sdk)
+
+Usage (WebIDL bindings)
 -----
 
-<span style="color:#900">The current bindings are likely to be superceded by the new "embind" bindings in the incoming branch, which fixes a lot of limitations in the current bindings. The following section explains some of the basics of using the non-embind bindings.</span>
+The current bindings are created with the [WebIDL binder](http://kripken.github.io/emscripten-site/docs/coding/connecting_cpp_and_javascript/WebIDL-Binder.html). Read [box2d.idl](/kripken/box2d.js/box2d.idl) to see the class, methods, and attributes that are bound.
 
 <span style="color:#f00;font-weight:bold">Note:</span> To improve readability all code snippets below assume that everything in the 'Box2D' namespace has been made available! (Check the 'using' function in `html5canvas_demo/embox2d-helpers.js` for details.)
 
@@ -161,22 +163,25 @@ Example revolute joint:
 
 ### Using debug draw
 
-The customizeVTable function can be used to replace the functions of a b2Draw object:
+Create a `JSDraw` object, and supply implementations of the draw methods. (Note: All methods must
+be implemented even if unused.)
 
-    var debugDraw = new Box2D.b2Draw();
+    var debugDraw = new Box2D.JSDraw();
 
-    Box2D.customizeVTable(debugDraw, [{
-        original: Box2D.b2Draw.prototype.DrawSegment,
-        replacement:
-            function(thsPtr, vert1Ptr, vert2Ptr, colorPtr ) {
-                setColorFromDebugDrawCallback( colorPtr );
-                drawSegment( vert1Ptr, vert2Ptr );
-            }
-    }]);
+    debugDraw.DrawSegment = function(vert1Ptr, vert2Ptr, colorPtr ) {
+        setColorFromDebugDrawCallback( colorPtr );
+        drawSegment( vert1Ptr, vert2Ptr );
+    }
+    // Empty implementations for unused methods.
+    debugDraw.DrawPolygon = function() {};
+    debugDraw.DrawSolidPolygon = function() {};
+    debugDraw.DrawCircle = function() {};
+    debugDraw.DrawSolidCircle = function() {};
+    debugDraw.DrawTransform = function() {};
 
-    world.SetDebugDraw( myDebugDraw );
+    world.SetDebugDraw( debugDraw );
 
-The first parameter given to the callback function (`thsPtr` in the example above) will be the object emscripten uses to store the class itself and can be ignored. The other parameters will also be pointers to data inside emscripten's innards, so you'll need to wrap them to get the data type you are looking for. Here are the two functions mentioned above, as an example of how you would wrap the passed `b2Color` and `b2Vec2` parameters and use them in your drawing. This example is to draw on a HTML5 canvas:
+The parameters of the draw methods will be pointers to data inside emscripten's innards, so you'll need to wrap them to get the data type you are looking for. Here are the two functions mentioned above, as an example of how you would wrap the passed `b2Color` and `b2Vec2` parameters and use them in your drawing. This example is to draw on a HTML5 canvas:
 
     function setColorFromDebugDrawCallback( colorPtr ) {
         var color = Box2D.wrapPointer( colorPtr, b2Color );
@@ -205,19 +210,19 @@ Accessing the vertex arrays passed to other functions such as DrawPolygon are so
 
 Contact listener callbacks are also implemented with customizeVTable.
 
-    listener = new b2ContactListener();
+    listener = new JSContactListener();
+    listener.BeginContact = function (contactPtr) {
+        var contact = Box2D.wrapPointer( contactPtr, b2Contact );
+        var fixtureA = contact.GetFixtureA();
+        var fixtureB = contact.GetFixtureB();
 
-    Box2D.customizeVTable(listener, [{
-        original: Box2D.b2ContactListener.prototype.BeginContact,
-        replacement:
-            function (thsPtr, contactPtr) {
-                var contact = Box2D.wrapPointer( contactPtr, b2Contact );
-                var fixtureA = contact.GetFixtureA();
-                var fixtureB = contact.GetFixtureB();
+        // now do what you wish with the fixtures
+    }
 
-                // now do what you wish with the fixtures
-            }
-    }])
+    // Empty implementations for unused methods.
+    listener.EndContact = function() {};
+    listener.PreSolve = function() {};
+    listener.PostSolve = function() {};
 
     world.SetContactListener( listener );
 
@@ -225,24 +230,17 @@ Contact listener callbacks are also implemented with customizeVTable.
 
 Callbacks for other uses such as world querying and raycasting can also be implemented with customizeVTable. Here is the callback used in the 'testbed' to find the fixture that the mouse cursor is over when the left button is clicked:
 
-    myQueryCallback = new b2QueryCallback();
+    myQueryCallback = new JSQueryCallback();
 
-    Box2D.customizeVTable(myQueryCallback, [{
-        original: Box2D.b2QueryCallback.prototype.ReportFixture,
-        replacement:
-            function(thsPtr, fixturePtr) {
-                var ths = Box2D.wrapPointer( thsPtr, b2QueryCallback );
-                var fixture = Box2D.wrapPointer( fixturePtr, b2Fixture );
-                if ( fixture.GetBody().GetType() != Box2D.b2_dynamicBody ) //mouse cannot drag static bodies around
-                    return true;
-                // at this point we know the mouse is inside the AABB of this fixture,
-                // but we need to check if it's actually inside the fixture as well
-                if ( ! fixture.TestPoint( ths.m_point ) )
-                    return true;
-                ths.m_fixture = fixture;
-                return false;
-            }
-    }]);
+    myQueryCallback.ReportFixture = function(fixturePtr) {
+        var fixture = Box2D.wrapPointer( fixturePtr, b2Fixture );
+        if ( fixture.GetBody().GetType() != Box2D.b2_dynamicBody ) //mouse cannot drag static bodies around
+            return true;
+        if ( ! fixture.TestPoint( this.m_point ) )
+            return true;
+        this.m_fixture = fixture;
+        return false;
+    };
 
 The callback is used like:
 
@@ -255,3 +253,17 @@ The callback is used like:
         //do something with the fixture that was clicked
     }
 
+### Using a Destruction Listener
+
+The standard b2DestructionListener class can't be used directly from javascript, as it has two methods that share
+the same name (`SayGoodbye`), and differ only by the type of their single parameter.
+
+To listen for destruction events, do:
+
+    var myDestructionListener = new JSDestructionListener()
+    myDestructionListener.SayGoodbyeJoint = function(joint) {
+        var joint = Box2D.wrapPointer( joint, b2Joint );
+    }
+    myDestructionListener.SayGoodbyeFixture = function(fixture) {
+        var fixture = Box2D.wrapPointer( fixture, b2Fixture );
+    }
