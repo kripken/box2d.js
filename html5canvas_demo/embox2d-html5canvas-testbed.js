@@ -270,22 +270,17 @@ function init() {
     myDebugDraw = getCanvasDebugDraw();            
     myDebugDraw.SetFlags(e_shapeBit);
     
-    myQueryCallback = new b2QueryCallback();
-    
-    Box2D.customizeVTable(myQueryCallback, [{
-    original: Box2D.b2QueryCallback.prototype.ReportFixture,
-    replacement:
-        function(thsPtr, fixturePtr) {
-            var ths = Box2D.wrapPointer( thsPtr, b2QueryCallback );
-            var fixture = Box2D.wrapPointer( fixturePtr, b2Fixture );
-            if ( fixture.GetBody().GetType() != Box2D.b2_dynamicBody ) //mouse cannot drag static bodies around
-                return true;
-            if ( ! fixture.TestPoint( ths.m_point ) )
-                return true;
-            ths.m_fixture = fixture;
-            return false;
-        }
-    }]);
+    myQueryCallback = new JSQueryCallback();
+
+    myQueryCallback.ReportFixture = function(fixturePtr) {
+        var fixture = Box2D.wrapPointer( fixturePtr, b2Fixture );
+        if ( fixture.GetBody().GetType() != Box2D.b2_dynamicBody ) //mouse cannot drag static bodies around
+            return true;
+        if ( ! fixture.TestPoint( this.m_point ) )
+            return true;
+        this.m_fixture = fixture;
+        return false;
+    };
 }
 
 function changeTest() {    

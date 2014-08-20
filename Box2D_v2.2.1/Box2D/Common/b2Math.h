@@ -21,17 +21,10 @@
 
 #include <Box2D/Common/b2Settings.h>
 
-#ifdef EM_NO_LIBCPP
-#include <math.h>
-#include <float.h>
-#include <stddef.h>
-#include <limits.h>
-#else
 #include <cmath>
 #include <cfloat>
 #include <cstddef>
 #include <limits>
-#endif
 
 /// This function is used to ensure that a floating point number is
 /// not a NaN or infinity.
@@ -155,8 +148,7 @@ struct b2Vec2
 		return b2Vec2(-y, x);
 	}
 
-	float32 x;
-	float32 y;
+	float32 x, y;
 };
 
 /// A 2D column vector with 3 elements.
