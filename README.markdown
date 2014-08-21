@@ -52,7 +52,7 @@ Building
 
 This runs emscripten and uses it to compile a version of the Box2D source code stored within the box2d.js git. This source code has been modified to add constructors to some objects to ensure that emscripten will generate bindings for them.
 
-Currently, you need to use the incoming branch of emscripten to build box2d.js. See [http://kripken.github.io/emscripten-site/docs/building_from_source/building_emscripten_from_source_using_the_sdk.html#building-emscripten-from-source-using-the-sdk](http://kripken.github.io/emscripten-site/docs/building_from_source/building_emscripten_from_source_using_the_sdk.html#building-emscripten-from-source-using-the-sdk)
+Currently, you need to use a very recent Emscripten to build, version 1.23.0 or later (master branch as of Aug 21 2014) to build box2d.js. See [http://kripken.github.io/emscripten-site/docs/building_from_source/building_emscripten_from_source_using_the_sdk.html#building-emscripten-from-source-using-the-sdk](http://kripken.github.io/emscripten-site/docs/building_from_source/building_emscripten_from_source_using_the_sdk.html#building-emscripten-from-source-using-the-sdk)
 
 Usage (WebIDL bindings)
 -----
