@@ -9,7 +9,7 @@
 PYTHON=$(ENV) python
 
 OPTS = -Os
-LINK_OPTS = -O3 --llvm-lto 1
+LINK_OPTS = -O3 --llvm-lto 1 -s NO_FILESYSTEM=1 -s NO_BROWSER=1
 
 O = Box2D_v2.2.1/Box2D
 OBJECTS = \
