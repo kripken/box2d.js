@@ -73,7 +73,7 @@ Currently, you need to use a very recent Emscripten to build, version 1.23.0 or 
 Usage (WebIDL bindings)
 -----
 
-The current bindings are created with the [WebIDL binder](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/WebIDL-Binder.html). Read [Box2D_v2.2.1.idl](box2d.js/Box2D_v2.2.1.idl) to see the class, methods, and attributes that are bound.
+The current bindings are created with the [WebIDL binder](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/WebIDL-Binder.html). Read [Box2D_v2.2.1.idl](Box2D_v2.2.1.idl) to see the class, methods, and attributes that are bound.
 
 <span style="color:#f00;font-weight:bold">Note:</span> To improve readability all code snippets below assume that everything in the 'Box2D' namespace has been made available! (Check the 'using' function in `helpers/embox2d-helpers.js` for details.)
 
