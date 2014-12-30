@@ -6,75 +6,99 @@
 # For placing path overrides.. this path is hidden from git
 -include Makefile.local
 
+LATEST =  Box2D_v2.3.1
+STABLE =  Box2D_v2.2.1
 PYTHON=$(ENV) python
+VERSION := stable
+BUILD := min
 
-OPTS = -Os
-LINK_OPTS = -O3 --llvm-lto 1 -s NO_FILESYSTEM=1 -s NO_BROWSER=1
+ifeq ($(BUILD), debug)
+	OPTS = -O0 -g2
+	LINK_OPTS = -g4 --llvm-lto 0 -s NO_FILESYSTEM=1 -s NO_BROWSER=1 -s ASSERTIONS=2 --closure 0  -s DEMANGLE_SUPPORT=1 
+else
+	OPTS = -Os
+	LINK_OPTS =  -O3 --llvm-lto 1 -s NO_FILESYSTEM=1 -s NO_BROWSER=1  --closure 1  --js-transform "python bundle.py"
+endif
 
-O = Box2D_v2.2.1/Box2D
-OBJECTS = \
-$(O)/Collision/b2BroadPhase.bc \
-$(O)/Collision/b2CollideCircle.bc \
-$(O)/Collision/b2CollideEdge.bc \
-$(O)/Collision/b2CollidePolygon.bc \
-$(O)/Collision/b2Collision.bc \
-$(O)/Collision/b2Distance.bc \
-$(O)/Collision/b2DynamicTree.bc \
-$(O)/Collision/b2TimeOfImpact.bc \
-$(O)/Collision/Shapes/b2ChainShape.bc \
-$(O)/Collision/Shapes/b2CircleShape.bc \
-$(O)/Collision/Shapes/b2EdgeShape.bc \
-$(O)/Collision/Shapes/b2PolygonShape.bc \
-$(O)/Common/b2BlockAllocator.bc \
-$(O)/Common/b2Draw.bc \
-$(O)/Common/b2Math.bc \
-$(O)/Common/b2Settings.bc \
-$(O)/Common/b2StackAllocator.bc \
-$(O)/Common/b2Timer.bc \
-$(O)/Dynamics/b2Body.bc \
-$(O)/Dynamics/b2ContactManager.bc \
-$(O)/Dynamics/b2Fixture.bc \
-$(O)/Dynamics/b2Island.bc \
-$(O)/Dynamics/b2World.bc \
-$(O)/Dynamics/b2WorldCallbacks.bc \
-$(O)/Dynamics/Contacts/b2ChainAndCircleContact.bc \
-$(O)/Dynamics/Contacts/b2ChainAndPolygonContact.bc \
-$(O)/Dynamics/Contacts/b2CircleContact.bc \
-$(O)/Dynamics/Contacts/b2Contact.bc \
-$(O)/Dynamics/Contacts/b2ContactSolver.bc \
-$(O)/Dynamics/Contacts/b2EdgeAndCircleContact.bc \
-$(O)/Dynamics/Contacts/b2EdgeAndPolygonContact.bc \
-$(O)/Dynamics/Contacts/b2PolygonAndCircleContact.bc \
-$(O)/Dynamics/Contacts/b2PolygonContact.bc \
-$(O)/Dynamics/Joints/b2DistanceJoint.bc \
-$(O)/Dynamics/Joints/b2FrictionJoint.bc \
-$(O)/Dynamics/Joints/b2GearJoint.bc \
-$(O)/Dynamics/Joints/b2Joint.bc \
-$(O)/Dynamics/Joints/b2MouseJoint.bc \
-$(O)/Dynamics/Joints/b2PrismaticJoint.bc \
-$(O)/Dynamics/Joints/b2PulleyJoint.bc \
-$(O)/Dynamics/Joints/b2RevoluteJoint.bc \
-$(O)/Dynamics/Joints/b2RopeJoint.bc \
-$(O)/Dynamics/Joints/b2WeldJoint.bc \
-$(O)/Dynamics/Joints/b2WheelJoint.bc \
-$(O)/Rope/b2Rope.bc
+ifeq ($(VERSION), latest)
+	ACTIVE = $(LATEST)
+	OBJECTS = \
+	$(ACTIVE)/Box2D/Dynamics/Joints/b2MotorJoint.bc
+else ifeq ($(VERSION), stable)
+	ACTIVE = $(STABLE)
+else
+	ACTIVE = $(VERSION)
+endif
 
-all: box2d.js
+
+OBJECTS += \
+$(ACTIVE)/Box2D/Collision/b2BroadPhase.bc \
+$(ACTIVE)/Box2D/Collision/b2CollideCircle.bc \
+$(ACTIVE)/Box2D/Collision/b2CollideEdge.bc \
+$(ACTIVE)/Box2D/Collision/b2CollidePolygon.bc \
+$(ACTIVE)/Box2D/Collision/b2Collision.bc \
+$(ACTIVE)/Box2D/Collision/b2Distance.bc \
+$(ACTIVE)/Box2D/Collision/b2DynamicTree.bc \
+$(ACTIVE)/Box2D/Collision/b2TimeOfImpact.bc \
+$(ACTIVE)/Box2D/Collision/Shapes/b2ChainShape.bc \
+$(ACTIVE)/Box2D/Collision/Shapes/b2CircleShape.bc \
+$(ACTIVE)/Box2D/Collision/Shapes/b2EdgeShape.bc \
+$(ACTIVE)/Box2D/Collision/Shapes/b2PolygonShape.bc \
+$(ACTIVE)/Box2D/Common/b2BlockAllocator.bc \
+$(ACTIVE)/Box2D/Common/b2Draw.bc \
+$(ACTIVE)/Box2D/Common/b2Math.bc \
+$(ACTIVE)/Box2D/Common/b2Settings.bc \
+$(ACTIVE)/Box2D/Common/b2StackAllocator.bc \
+$(ACTIVE)/Box2D/Common/b2Timer.bc \
+$(ACTIVE)/Box2D/Dynamics/b2Body.bc \
+$(ACTIVE)/Box2D/Dynamics/b2ContactManager.bc \
+$(ACTIVE)/Box2D/Dynamics/b2Fixture.bc \
+$(ACTIVE)/Box2D/Dynamics/b2Island.bc \
+$(ACTIVE)/Box2D/Dynamics/b2World.bc \
+$(ACTIVE)/Box2D/Dynamics/b2WorldCallbacks.bc \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2ChainAndCircleContact.bc \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2ChainAndPolygonContact.bc \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2CircleContact.bc \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2Contact.bc \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2ContactSolver.bc \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2EdgeAndCircleContact.bc \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2EdgeAndPolygonContact.bc \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2PolygonAndCircleContact.bc \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2PolygonContact.bc \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2DistanceJoint.bc \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2FrictionJoint.bc \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2GearJoint.bc \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2Joint.bc \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2MouseJoint.bc \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2PrismaticJoint.bc \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2PulleyJoint.bc \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2RevoluteJoint.bc \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2RopeJoint.bc \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2WeldJoint.bc \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2WheelJoint.bc \
+$(ACTIVE)/Box2D/Rope/b2Rope.bc
+
+
+all: remove box2d.js
+	@echo $(ACTIVE)"_"$(BUILD)".js is ready"
 
 %.bc: %.cpp
-	$(CXX) $(OPTS) -IBox2D_v2.2.1 $< -o $@
+	$(CXX) $(OPTS) -I$(ACTIVE) $< -o $@
 
 box2d.bc: $(OBJECTS)
-	$(CXX) $(OPTS) -IBox2D_v2.2.1 -o $@ $(OBJECTS)
+	$(CXX) $(OPTS) -I$(ACTIVE) -o $@ $(OBJECTS)
 
-box2d_glue.cpp: box2d.idl
-	$(PYTHON) $(EMSCRIPTEN)/tools/webidl_binder.py box2d.idl box2d_glue
+box2d_glue.cpp: $(ACTIVE).idl
+	$(PYTHON) $(EMSCRIPTEN)/tools/webidl_binder.py $(ACTIVE).idl box2d_glue
 
 box2d_glue.h: box2d_glue.cpp
 
 box2d.js: box2d.bc box2d_glue.cpp box2d_glue.h
-	$(CXX) $(LINK_OPTS) -IBox2D_v2.2.1 -s EXPORT_BINDINGS=1 -s RESERVED_FUNCTION_POINTERS=20 --post-js box2d_glue.js --js-transform "python bundle.py" --closure 1 --memory-init-file 0 -s NO_EXIT_RUNTIME=1 glue_stub.cpp $< -o $@
+	$(CXX) $(LINK_OPTS) -I$(ACTIVE) -s EXPORT_BINDINGS=1 -s RESERVED_FUNCTION_POINTERS=20 --post-js box2d_glue.js --memory-init-file 0 -s NO_EXIT_RUNTIME=1 glue_stub.cpp $< -o build/$(ACTIVE)_$(BUILD).js
 
-clean:
-	rm -f box2d.js box2d.bc $(OBJECTS) box2d_bindings.cpp box2d_bindings.bc box2d.clean.h box2d_glue.js box2d_glue.cpp WebIDLGrammar.pkl parser.out
+clean: remove
+	rm -f $(OBJECTS)
+	
+remove:
+	rm -f box2d.bc box2d_bindings.cpp box2d_bindings.bc box2d.clean.h box2d_glue.js box2d_glue.cpp WebIDLGrammar.pkl parser.out
 
