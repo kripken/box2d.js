@@ -32,7 +32,7 @@ It seems to be running ok on at least the following:
 Testbed
 -------
 
-The html5canvas_demo folder contains an example web page and script files to reproduce the original Box2D testbed, with similar controls and features.
+The demo/html5canvas folder contains an example web page and script files to reproduce the original Box2D testbed, with similar controls and features.
 
 **Demo: http://www.iforce2d.net/embox2d/testbed.html**
 
@@ -45,10 +45,26 @@ Like the original C++ version, the testbed is set up so that adding another test
 5. Include the new file at the beginning of testbed.html with the other tests.
 6. Add the new test option to the "testNumber" select box in test.html
 
+R.U.B.E testbed
+---------------
+
+The demo/rube_testbed folder contains the testbed with scenes which were exported from R.U.B.E editor
+
+**Demo: http://argadnet.com/demo/rube_testbed/box2djs/index.php**
+
 Building
 --------
 
     % /PATH/TO/EMSCRIPTEN emmake make
+
+
+To build latest (2.3.1) version:
+    
+    % /PATH/TO/EMSCRIPTEN emmake make VERSION=latest 
+
+Also, You can build the debug version of javascript file (with source maps support): 
+    
+    % /PATH/TO/EMSCRIPTEN emmake make VERSION=latest BUILD=debug
 
 This runs emscripten and uses it to compile a version of the Box2D source code stored within the box2d.js git. This source code has been modified to add constructors to some objects to ensure that emscripten will generate bindings for them.
 
@@ -57,9 +73,9 @@ Currently, you need to use a very recent Emscripten to build, version 1.23.0 or 
 Usage (WebIDL bindings)
 -----
 
-The current bindings are created with the [WebIDL binder](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/WebIDL-Binder.html). Read [box2d.idl](/kripken/box2d.js/box2d.idl) to see the class, methods, and attributes that are bound.
+The current bindings are created with the [WebIDL binder](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/WebIDL-Binder.html). Read [Box2D_v2.2.1.idl](Box2D_v2.2.1.idl) to see the class, methods, and attributes that are bound.
 
-<span style="color:#f00;font-weight:bold">Note:</span> To improve readability all code snippets below assume that everything in the 'Box2D' namespace has been made available! (Check the 'using' function in `html5canvas_demo/embox2d-helpers.js` for details.)
+<span style="color:#f00;font-weight:bold">Note:</span> To improve readability all code snippets below assume that everything in the 'Box2D' namespace has been made available! (Check the 'using' function in `helpers/embox2d-helpers.js` for details.)
 
 ### Class member variable access
 
