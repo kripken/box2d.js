@@ -4,7 +4,7 @@ box2d.js
 
 **Demo: http://kripken.github.io/box2d.js/webgl_demo/box2d.html**
 
-**Example code to give you an idea of the API: https://github.com/kripken/box2d.js/blob/master/webgl_demo/box2d.html#L14**
+**Example code to give you an idea of the API: https://github.com/kripken/box2d.js/blob/master/demo/webgl/box2d.html#L14**
 
 box2d.js is a direct port of the Box2D 2D physics engine to JavaScript, using Emscripten. The source code is translated directly to JavaScript, without human rewriting, so functionality should be identical to the original Box2D.
 
@@ -48,7 +48,7 @@ Like the original C++ version, the testbed is set up so that adding another test
 R.U.B.E testbed
 ---------------
 
-The demo/rube_testbed folder contains the testbed with scenes which were exported from R.U.B.E editor
+The demo/rube_testbed folder contains the testbed with scenes which were exported from the R.U.B.E editor
 
 **Demo: http://argadnet.com/demo/rube_testbed/box2djs/index.php**
 
