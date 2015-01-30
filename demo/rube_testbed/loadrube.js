@@ -37,7 +37,11 @@ function loadBodyFromRUBE(bodyJso, world) {
     else
         bd.set_position(new Box2D.b2Vec2(0,0));
 
-    bd.set_gravityScale(bodyJso.gravityScale || 1);
+    if (bodyJso.hasOwnProperty('gravityScale') && !isNaN(parseFloat(bodyJso.gravityScale)) && isFinite(bodyJso.gravityScale)) {
+        bd.set_gravityScale(bodyJso.gravityScale);
+    } else {
+        bd.set_gravityScale(1);
+    }
 
     var body = world.CreateBody(bd);
 
