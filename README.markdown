@@ -55,16 +55,22 @@ The demo/rube_testbed folder contains the testbed with scenes which were exporte
 Building
 --------
 
-    % /PATH/TO/EMSCRIPTEN emmake make
+```sh
+$ /PATH/TO/EMSCRIPTEN emmake make
+```
 
 
 To build latest (2.3.1) version:
-    
-    % /PATH/TO/EMSCRIPTEN emmake make VERSION=latest 
+
+```sh
+$ /PATH/TO/EMSCRIPTEN emmake make VERSION=latest 
+```
 
 Also, You can build the debug version of javascript file (with source maps support): 
-    
-    % /PATH/TO/EMSCRIPTEN emmake make VERSION=latest BUILD=debug
+
+```sh
+$ /PATH/TO/EMSCRIPTEN emmake make VERSION=latest BUILD=debug
+```
 
 This runs emscripten and uses it to compile a version of the Box2D source code stored within the box2d.js git. This source code has been modified to add constructors to some objects to ensure that emscripten will generate bindings for them.
 
@@ -81,23 +87,30 @@ The current bindings are created with the [WebIDL binder](http://kripken.github.
 
 The values of public member variables of Box2D classes (mostly the definition classes) can be set and accessed using the generated functions, which will be the variable name prefixed with `set_` or `get_`, eg.
 
-    //C++
-    circleShape.m_radius = 2;
-
-    //javascript
-    circleShape.set_m_radius( 2 );
+```cpp
+//C++
+circleShape.m_radius = 2;
+```
+```javascript
+//javascript
+circleShape.set_m_radius( 2 );
+```
 
 ### Vector manipulation
 
 b2Vec2 vectors can be created like:
 
-    var myVec = new b2Vec2( 1.2, 3.4 );
+```javascript
+var myVec = new b2Vec2( 1.2, 3.4 );
+```
 
 As mentioned above, the individual components of vectors can be obtained with the `get_x()` and `get_y()` functions.
 
 Vectors can be assigned with the = operator but if you are coming from a C++ background, you may be caught out by the fact that this does not result in two independent variables. To get the same behavior as the original C++ assignment you can copy the components like:
 
-    var anotherVec = new b2Vec2( vec.get_x(), vec.get_y() );
+```javascript
+var anotherVec = new b2Vec2( vec.get_x(), vec.get_y() );
+```
 
 Alternatively the assignment, addition and subtraction operators can be replaced with the functions below (however, experience shows these to be somewhat dodgy...)
 
@@ -111,114 +124,136 @@ Alternatively the assignment, addition and subtraction operators can be replaced
 
 A typical world can be created like:
 
-    var world = new b2World( new b2Vec2(0.0, -10.0) );
+```javascript
+var world = new b2World( new b2Vec2(0.0, -10.0) );
+```
 
 ### Creating bodies
 
 A static body can be created like:
 
-    var groundBody = world.CreateBody( new b2BodyDef() );
+```javascript
+var groundBody = world.CreateBody( new b2BodyDef() );
+```
 
 ... and dynamic/kinematic bodies like:
 
-    var bodyDef = new b2BodyDef();
-    bodyDef.set_type( b2_dynamicBody );
-    var dynamicBody = world.CreateBody( bodyDef );
+```javascript
+var bodyDef = new b2BodyDef();
+bodyDef.set_type( b2_dynamicBody );
+var dynamicBody = world.CreateBody( bodyDef );
+```
 
 ### Creating fixtures
 
 A circle fixture with density 1 and default values for everything else (friction, restitution etc):
 
-    var circleShape = new b2CircleShape();
-    circleShape.set_m_radius( 0.5 );
-    body.CreateFixture( circleShape, 1.0 );
+```javascript
+var circleShape = new b2CircleShape();
+circleShape.set_m_radius( 0.5 );
+body.CreateFixture( circleShape, 1.0 );
+```
 
 A circle fixture with some more specific settings:
 
-    var fixtureDef = new b2FixtureDef();
-    fixtureDef.set_density( 2.5 );
-    fixtureDef.set_friction( 0.6 );
-    fixtureDef.set_shape( circleShape );
-    body.CreateFixture( fixtureDef );
+```javascript
+var fixtureDef = new b2FixtureDef();
+fixtureDef.set_density( 2.5 );
+fixtureDef.set_friction( 0.6 );
+fixtureDef.set_shape( circleShape );
+body.CreateFixture( fixtureDef );
+```
 
 An edge shape:
 
-    var edgeShape = new b2EdgeShape();
-    edgeShape.Set( new b2Vec2( -20, 3 ), new b2Vec2( 20, 7 ) );
-    fixtureDef.set_shape( edgeShape );
-    body.CreateFixture( fixtureDef );
+```javascript
+var edgeShape = new b2EdgeShape();
+edgeShape.Set( new b2Vec2( -20, 3 ), new b2Vec2( 20, 7 ) );
+fixtureDef.set_shape( edgeShape );
+body.CreateFixture( fixtureDef );
+```
 
 Creating polygon shapes seems to be somewhat messy with the current bindings, so the recommended way is to use the `createPolygonShape` helper function in embox2d-helpers.js:
 
-    var verts = [];
-    verts.push( new b2Vec2( 7,-1 ) );
-    verts.push( new b2Vec2( 8,-2 ) );
-    verts.push( new b2Vec2( 9, 3 ) );
-    verts.push( new b2Vec2( 7, 1 ) );
-    var polygonShape = createPolygonShape( verts );
-    fixtureDef.set_shape( polygonShape );
-    body.CreateFixture( fixtureDef );
+```javascript
+var verts = [];
+verts.push( new b2Vec2( 7,-1 ) );
+verts.push( new b2Vec2( 8,-2 ) );
+verts.push( new b2Vec2( 9, 3 ) );
+verts.push( new b2Vec2( 7, 1 ) );
+var polygonShape = createPolygonShape( verts );
+fixtureDef.set_shape( polygonShape );
+body.CreateFixture( fixtureDef );
+```
 
 Likewise for chain shapes: <span style="color:#900">*Edit: seems to be a problem with this, best to avoid chain shapes for now*</span>
 
-    var chainShape = createChainShape( verts, true ); //true for closed loop, false for open chain
-    fixtureDef.set_shape( chainShape );
-    body.CreateFixture( fixtureDef );
+```javascript
+var chainShape = createChainShape( verts, true ); //true for closed loop, false for open chain
+fixtureDef.set_shape( chainShape );
+body.CreateFixture( fixtureDef );
+```
 
 ### Creating joints
 
 Example revolute joint:
 
-    var jointDef = new b2RevoluteJointDef();
-    jointDef.set_bodyA( body1 );
-    jointDef.set_bodyB( body2 );
-    jointDef.set_localAnchorA( new b2Vec2( 1, 2 ) );
-    jointDef.set_localAnchorB( new b2Vec2( 3, 4 ) );
-    jointDef.set_collideConnected( true );
-    var revoluteJoint = Box2D.castObject( world.CreateJoint( jointDef ), b2WheelJoint );
+```javascript
+var jointDef = new b2RevoluteJointDef();
+jointDef.set_bodyA( body1 );
+jointDef.set_bodyB( body2 );
+jointDef.set_localAnchorA( new b2Vec2( 1, 2 ) );
+jointDef.set_localAnchorB( new b2Vec2( 3, 4 ) );
+jointDef.set_collideConnected( true );
+var revoluteJoint = Box2D.castObject( world.CreateJoint( jointDef ), b2WheelJoint );
+```
 
 ### Using debug draw
 
 Create a `JSDraw` object, and supply implementations of the draw methods. (Note: All methods must
 be implemented even if unused.)
 
-    var debugDraw = new Box2D.JSDraw();
+```javascript
+var debugDraw = new Box2D.JSDraw();
 
-    debugDraw.DrawSegment = function(vert1Ptr, vert2Ptr, colorPtr ) {
-        setColorFromDebugDrawCallback( colorPtr );
-        drawSegment( vert1Ptr, vert2Ptr );
-    }
-    // Empty implementations for unused methods.
-    debugDraw.DrawPolygon = function() {};
-    debugDraw.DrawSolidPolygon = function() {};
-    debugDraw.DrawCircle = function() {};
-    debugDraw.DrawSolidCircle = function() {};
-    debugDraw.DrawTransform = function() {};
+debugDraw.DrawSegment = function(vert1Ptr, vert2Ptr, colorPtr ) {
+    setColorFromDebugDrawCallback( colorPtr );
+    drawSegment( vert1Ptr, vert2Ptr );
+}
+// Empty implementations for unused methods.
+debugDraw.DrawPolygon = function() {};
+debugDraw.DrawSolidPolygon = function() {};
+debugDraw.DrawCircle = function() {};
+debugDraw.DrawSolidCircle = function() {};
+debugDraw.DrawTransform = function() {};
 
-    world.SetDebugDraw( debugDraw );
+world.SetDebugDraw( debugDraw );
+```
 
 The parameters of the draw methods will be pointers to data inside emscripten's innards, so you'll need to wrap them to get the data type you are looking for. Here are the two functions mentioned above, as an example of how you would wrap the passed `b2Color` and `b2Vec2` parameters and use them in your drawing. This example is to draw on a HTML5 canvas:
 
-    function setColorFromDebugDrawCallback( colorPtr ) {
-        var color = Box2D.wrapPointer( colorPtr, b2Color );
-        var red = (color.get_r() * 255) | 0;
-        var green = (color.get_g() * 255) | 0;
-        var blue = (color.get_b() * 255) | 0;
+```javascript
+function setColorFromDebugDrawCallback( colorPtr ) {
+    var color = Box2D.wrapPointer( colorPtr, b2Color );
+    var red = (color.get_r() * 255) | 0;
+    var green = (color.get_g() * 255) | 0;
+    var blue = (color.get_b() * 255) | 0;
 
-        var colorStr = red + "," + green + "," + blue;
-        context.fillStyle = "rgba(" + colorStr + ",0.5)";
-        context.strokeStyle = "rgb(" + colorStr + ")";
-    }
+    var colorStr = red + "," + green + "," + blue;
+    context.fillStyle = "rgba(" + colorStr + ",0.5)";
+    context.strokeStyle = "rgb(" + colorStr + ")";
+}
 
-    function drawSegment( vert1Ptr, vert2Ptr ) {
-        var vert1 = Box2D.wrapPointer( vert1Ptr, b2Vec2 );
-        var vert2 = Box2D.wrapPointer( vert2Ptr, b2Vec2 );
+function drawSegment( vert1Ptr, vert2Ptr ) {
+    var vert1 = Box2D.wrapPointer( vert1Ptr, b2Vec2 );
+    var vert2 = Box2D.wrapPointer( vert2Ptr, b2Vec2 );
 
-        context.beginPath();
-        context.moveTo( vert1.get_x(), vert1.get_y() );
-        context.lineTo( vert2.get_x(), vert2.get_y() );
-        context.stroke();
-    }
+    context.beginPath();
+    context.moveTo( vert1.get_x(), vert1.get_y() );
+    context.lineTo( vert2.get_x(), vert2.get_y() );
+    context.stroke();
+}
+```
 
 Accessing the vertex arrays passed to other functions such as DrawPolygon are somewhat more tricky - please see the embox2d-html5canvas-debugDraw.js source for an example.
 
@@ -226,48 +261,54 @@ Accessing the vertex arrays passed to other functions such as DrawPolygon are so
 
 Contact listener callbacks are also implemented with customizeVTable.
 
-    listener = new JSContactListener();
-    listener.BeginContact = function (contactPtr) {
-        var contact = Box2D.wrapPointer( contactPtr, b2Contact );
-        var fixtureA = contact.GetFixtureA();
-        var fixtureB = contact.GetFixtureB();
+```javascript
+listener = new JSContactListener();
+listener.BeginContact = function (contactPtr) {
+    var contact = Box2D.wrapPointer( contactPtr, b2Contact );
+    var fixtureA = contact.GetFixtureA();
+    var fixtureB = contact.GetFixtureB();
 
-        // now do what you wish with the fixtures
-    }
+    // now do what you wish with the fixtures
+}
 
-    // Empty implementations for unused methods.
-    listener.EndContact = function() {};
-    listener.PreSolve = function() {};
-    listener.PostSolve = function() {};
+// Empty implementations for unused methods.
+listener.EndContact = function() {};
+listener.PreSolve = function() {};
+listener.PostSolve = function() {};
 
-    world.SetContactListener( listener );
+world.SetContactListener( listener );
+```
 
 ### Using world callbacks
 
 Callbacks for other uses such as world querying and raycasting can also be implemented with customizeVTable. Here is the callback used in the 'testbed' to find the fixture that the mouse cursor is over when the left button is clicked:
 
-    myQueryCallback = new JSQueryCallback();
+```javascript
+myQueryCallback = new JSQueryCallback();
 
-    myQueryCallback.ReportFixture = function(fixturePtr) {
-        var fixture = Box2D.wrapPointer( fixturePtr, b2Fixture );
-        if ( fixture.GetBody().GetType() != Box2D.b2_dynamicBody ) //mouse cannot drag static bodies around
-            return true;
-        if ( ! fixture.TestPoint( this.m_point ) )
-            return true;
-        this.m_fixture = fixture;
-        return false;
-    };
+myQueryCallback.ReportFixture = function(fixturePtr) {
+    var fixture = Box2D.wrapPointer( fixturePtr, b2Fixture );
+    if ( fixture.GetBody().GetType() != Box2D.b2_dynamicBody ) //mouse cannot drag static bodies around
+        return true;
+    if ( ! fixture.TestPoint( this.m_point ) )
+        return true;
+    this.m_fixture = fixture;
+    return false;
+};
+```
 
 The callback is used like:
 
-    myQueryCallback.m_fixture = null;
-    myQueryCallback.m_point = new b2Vec2( mouseX, mouseY );
+```javascript
+myQueryCallback.m_fixture = null;
+myQueryCallback.m_point = new b2Vec2( mouseX, mouseY );
 
-    world.QueryAABB( myQueryCallback, aabb ); // the AABB is a tiny square around the current mouse position
+world.QueryAABB( myQueryCallback, aabb ); // the AABB is a tiny square around the current mouse position
 
-    if ( myQueryCallback.m_fixture ) {
-        //do something with the fixture that was clicked
-    }
+if ( myQueryCallback.m_fixture ) {
+    //do something with the fixture that was clicked
+}
+```
 
 ### Using a Destruction Listener
 
@@ -276,10 +317,12 @@ the same name (`SayGoodbye`), and differ only by the type of their single parame
 
 To listen for destruction events, do:
 
-    var myDestructionListener = new JSDestructionListener()
-    myDestructionListener.SayGoodbyeJoint = function(joint) {
-        var joint = Box2D.wrapPointer( joint, b2Joint );
-    }
-    myDestructionListener.SayGoodbyeFixture = function(fixture) {
-        var fixture = Box2D.wrapPointer( fixture, b2Fixture );
-    }
+```javascript
+var myDestructionListener = new JSDestructionListener()
+myDestructionListener.SayGoodbyeJoint = function(joint) {
+    var joint = Box2D.wrapPointer( joint, b2Joint );
+}
+myDestructionListener.SayGoodbyeFixture = function(fixture) {
+    var fixture = Box2D.wrapPointer( fixture, b2Fixture );
+}
+```
