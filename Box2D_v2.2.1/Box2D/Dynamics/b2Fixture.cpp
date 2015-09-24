@@ -233,8 +233,8 @@ void b2Fixture::Dump(int32 bodyIndex)
 	b2Log("    fd.restitution = %.15lef;\n", m_restitution);
 	b2Log("    fd.density = %.15lef;\n", m_density);
 	b2Log("    fd.isSensor = bool(%d);\n", m_isSensor);
-	b2Log("    fd.filter.categoryBits = uint16(%d);\n", m_filter.categoryBits);
-	b2Log("    fd.filter.maskBits = uint16(%d);\n", m_filter.maskBits);
+	b2Log("    fd.filter.categoryBits = uint32(%d);\n", m_filter.categoryBits);
+	b2Log("    fd.filter.maskBits = uint32(%d);\n", m_filter.maskBits);
 	b2Log("    fd.filter.groupIndex = int16(%d);\n", m_filter.groupIndex);
 
 	switch (m_shape->m_type)
