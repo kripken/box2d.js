@@ -1,6 +1,6 @@
 // js -m -n -e "load('box2d.js')" test.js
 
-  Box2D().then(function(Box2D) {
+Box2D().then(function(Box2D) {
   function clock() {
     return Date.now();
   }
