@@ -19,7 +19,7 @@ ifeq ($(BUILD), debug)
 	LINK_OPTS += -g -s NO_FILESYSTEM=1 -s ASSERTIONS=2 -s DEMANGLE_SUPPORT=1
 else
 	OPTS = -Os
-	LINK_OPTS += -O3 --llvm-lto 1 #--closure 1
+	LINK_OPTS += -O3 --llvm-lto 1
 endif
 
 ifeq ($(VERSION), latest)
@@ -95,7 +95,7 @@ box2d_glue.cpp: $(ACTIVE).idl
 box2d_glue.h: box2d_glue.cpp
 
 box2d.js: box2d.bc box2d_glue.cpp box2d_glue.h
-	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).js
+	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).js --closure 1
 
 box2d.wasm.js: box2d.bc box2d_glue.cpp box2d_glue.h
 	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).wasm.js -s WASM=1
