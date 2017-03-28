@@ -83,6 +83,8 @@ Usage (WebIDL bindings)
 
 The current bindings are created with the [WebIDL binder](http://kripken.github.io/emscripten-site/docs/porting/connecting_cpp_and_javascript/WebIDL-Binder.html). Read [Box2D_v2.2.1.idl](Box2D_v2.2.1.idl) to see the class, methods, and attributes that are bound.
 
+See [test.js](test.js) for a small working example.
+
 <span style="color:#f00;font-weight:bold">Note:</span> To improve readability all code snippets below assume that everything in the 'Box2D' namespace has been made available! (Check the 'using' function in `helpers/embox2d-helpers.js` for details.)
 
 ### Class member variable access
