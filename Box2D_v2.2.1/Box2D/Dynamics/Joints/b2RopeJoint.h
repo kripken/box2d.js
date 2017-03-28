@@ -25,7 +25,6 @@
 /// a maximum lengths.
 /// Note: by default the connected objects will not collide.
 /// see collideConnected in b2JointDef.
-// emscripten - b2RopeJointDef: add functions to set/get base class members
 struct b2RopeJointDef : public b2JointDef
 {
 	b2RopeJointDef()
@@ -46,14 +45,6 @@ struct b2RopeJointDef : public b2JointDef
 	/// Warning: this must be larger than b2_linearSlop or
 	/// the joint will have no effect.
 	float32 maxLength;
-
-	// to generate javascript bindings
-	void set_bodyA(b2Body* b) { bodyA = b; }
-	void set_bodyB(b2Body* b) { bodyB = b; }
-	void set_collideConnected(bool b) { collideConnected = b; }
-	b2Body* get_bodyA(b2Body* b) { return bodyA; }
-	b2Body* get_bodyB(b2Body* b) { return bodyB; }
-	bool get_collideConnected(bool b) { return collideConnected; }
 };
 
 /// A rope joint enforces a maximum distance between two points
@@ -64,7 +55,6 @@ struct b2RopeJointDef : public b2JointDef
 /// would have some sponginess, so I chose not to implement it
 /// that way. See b2DistanceJoint if you want to dynamically
 /// control length.
-// emscripten - b2RopeJoint: make constructor public
 class b2RopeJoint : public b2Joint
 {
 public:
@@ -89,11 +79,10 @@ public:
 	/// Dump joint to dmLog
 	void Dump();
 
-	b2RopeJoint(const b2RopeJointDef* data);
-
 protected:
 
 	friend class b2Joint;
+	b2RopeJoint(const b2RopeJointDef* data);
 
 	void InitVelocityConstraints(const b2SolverData& data);
 	void SolveVelocityConstraints(const b2SolverData& data);

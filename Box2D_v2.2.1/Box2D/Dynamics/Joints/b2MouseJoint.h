@@ -23,7 +23,6 @@
 
 /// Mouse joint definition. This requires a world target point,
 /// tuning parameters, and the time step.
-// emscripten - b2MouseJointDef: add functions to set/get base class members
 struct b2MouseJointDef : public b2JointDef
 {
 	b2MouseJointDef()
@@ -49,14 +48,6 @@ struct b2MouseJointDef : public b2JointDef
 
 	/// The damping ratio. 0 = no damping, 1 = critical damping.
 	float32 dampingRatio;
-
-	// to generate javascript bindings
-	void set_bodyA(b2Body* b) { bodyA = b; }
-	void set_bodyB(b2Body* b) { bodyB = b; }
-	void set_collideConnected(bool b) { collideConnected = b; }
-	b2Body* get_bodyA(b2Body* b) { return bodyA; }
-	b2Body* get_bodyB(b2Body* b) { return bodyB; }
-	bool get_collideConnected(bool b) { return collideConnected; }
 };
 
 /// A mouse joint is used to make a point on a body track a
@@ -66,7 +57,6 @@ struct b2MouseJointDef : public b2JointDef
 /// NOTE: this joint is not documented in the manual because it was
 /// developed to be used in the testbed. If you want to learn how to
 /// use the mouse joint, look at the testbed.
-// emscripten - b2MouseJoint: make constructor public
 class b2MouseJoint : public b2Joint
 {
 public:
@@ -102,10 +92,10 @@ public:
 	/// The mouse joint does not support dumping.
 	void Dump() { b2Log("Mouse joint dumping is not supported.\n"); }
 
-	b2MouseJoint(const b2MouseJointDef* def);
-
 protected:
 	friend class b2Joint;
+
+	b2MouseJoint(const b2MouseJointDef* def);
 
 	void InitVelocityConstraints(const b2SolverData& data);
 	void SolveVelocityConstraints(const b2SolverData& data);

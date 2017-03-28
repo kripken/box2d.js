@@ -23,7 +23,6 @@
 
 /// Gear joint definition. This definition requires two existing
 /// revolute or prismatic joints (any combination will work).
-// emscripten - b2GearJointDef: add functions to set/get base class members
 struct b2GearJointDef : public b2JointDef
 {
 	b2GearJointDef()
@@ -43,14 +42,6 @@ struct b2GearJointDef : public b2JointDef
 	/// The gear ratio.
 	/// @see b2GearJoint for explanation.
 	float32 ratio;
-
-	// to generate javascript bindings
-	void set_bodyA(b2Body* b) { bodyA = b; }
-	void set_bodyB(b2Body* b) { bodyB = b; }
-	void set_collideConnected(bool b) { collideConnected = b; }
-	b2Body* get_bodyA(b2Body* b) { return bodyA; }
-	b2Body* get_bodyB(b2Body* b) { return bodyB; }
-	bool get_collideConnected(bool b) { return collideConnected; }
 };
 
 /// A gear joint is used to connect two joints together. Either joint
@@ -62,7 +53,6 @@ struct b2GearJointDef : public b2JointDef
 /// of length or units of 1/length.
 /// @warning You have to manually destroy the gear joint if joint1 or joint2
 /// is destroyed.
-// emscripten - b2GearJoint: make constructor public
 class b2GearJoint : public b2Joint
 {
 public:
@@ -85,11 +75,10 @@ public:
 	/// Dump joint to dmLog
 	void Dump();
 
-	b2GearJoint(const b2GearJointDef* data);
-
 protected:
 
 	friend class b2Joint;
+	b2GearJoint(const b2GearJointDef* data);
 
 	void InitVelocityConstraints(const b2SolverData& data);
 	void SolveVelocityConstraints(const b2SolverData& data);

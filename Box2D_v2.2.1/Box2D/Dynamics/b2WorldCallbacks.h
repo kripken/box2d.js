@@ -33,20 +33,18 @@ struct b2Manifold;
 /// Joints and fixtures are destroyed when their associated
 /// body is destroyed. Implement this listener so that you
 /// may nullify references to these joints and shapes.
-// emscripten - b2DestructionListener: add constructor and make virtual functions non-pure
 class b2DestructionListener
 {
 public:
-	b2DestructionListener() {}
 	virtual ~b2DestructionListener() {}
 
 	/// Called when any joint is about to be destroyed due
 	/// to the destruction of one of its attached bodies.
-	virtual void SayGoodbye(b2Joint* joint) {}
+	virtual void SayGoodbye(b2Joint* joint) = 0;
 
 	/// Called when any fixture is about to be destroyed due
 	/// to the destruction of its parent body.
-	virtual void SayGoodbye(b2Fixture* fixture) {}
+	virtual void SayGoodbye(b2Fixture* fixture) = 0;
 };
 
 /// Implement this class to provide collision filtering. In other words, you can implement
@@ -80,11 +78,9 @@ struct b2ContactImpulse
 /// You should strive to make your callbacks efficient because there may be
 /// many callbacks per time step.
 /// @warning You cannot create/destroy Box2D entities inside these callbacks.
-// emscripten - b2ContactListener: add constructor and make virtual functions non-pure
 class b2ContactListener
 {
 public:
-  b2ContactListener() {}
 	virtual ~b2ContactListener() {}
 
 	/// Called when two fixtures begin to touch.
@@ -124,25 +120,21 @@ public:
 
 /// Callback class for AABB queries.
 /// See b2World::Query
-// emscripten - b2QueryCallback: add constructor and make virtual functions non-pure
 class b2QueryCallback
 {
 public:
-	b2QueryCallback() {} 
 	virtual ~b2QueryCallback() {}
 
 	/// Called for each fixture found in the query AABB.
 	/// @return false to terminate the query.
-	virtual bool ReportFixture(b2Fixture* fixture) { return false; }
+	virtual bool ReportFixture(b2Fixture* fixture) = 0;
 };
 
 /// Callback class for ray casts.
 /// See b2World::RayCast
-// emscripten - b2RayCastCallback: add constructor and make virtual functions non-pure
 class b2RayCastCallback
 {
 public:
-	b2RayCastCallback() {}
 	virtual ~b2RayCastCallback() {}
 
 	/// Called for each fixture found in the query. You control how the ray cast
@@ -157,7 +149,7 @@ public:
 	/// @return -1 to filter, 0 to terminate, fraction to clip the ray for
 	/// closest hit, 1 to continue
 	virtual float32 ReportFixture(	b2Fixture* fixture, const b2Vec2& point,
-									const b2Vec2& normal, float32 fraction) { return 0; }
+									const b2Vec2& normal, float32 fraction) = 0;
 };
 
 #endif

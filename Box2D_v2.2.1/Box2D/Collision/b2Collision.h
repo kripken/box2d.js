@@ -20,9 +20,7 @@
 #define B2_COLLISION_H
 
 #include <Box2D/Common/b2Math.h>
-#ifndef EM_NO_LIBCPP
 #include <climits>
-#endif
 
 /// @file
 /// Structures and functions used for computing contact points, distance
@@ -160,11 +158,8 @@ struct b2RayCastOutput
 };
 
 /// An axis aligned bounding box.
-// emscripten - b2AABB: add constructor
 struct b2AABB
 {
-	b2AABB() {}
-
 	/// Verify that the bounds are sorted.
 	bool IsValid() const;
 
