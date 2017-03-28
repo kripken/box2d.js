@@ -6,18 +6,20 @@
 # For placing path overrides.. this path is hidden from git
 -include Makefile.local
 
-LATEST =  Box2D_v2.3.1
-STABLE =  Box2D_v2.2.1
+LATEST = Box2D_v2.3.1
+STABLE = Box2D_v2.2.1
 PYTHON=$(ENV) python
 VERSION := stable
 BUILD := min
 
+LINK_OPTS = -s MODULARIZE=1 -s 'EXPORT_NAME="Box2D"' -s NO_FILESYSTEM=1 -s EXPORT_BINDINGS=1 -s RESERVED_FUNCTION_POINTERS=20 --post-js box2d_glue.js --memory-init-file 0 -s NO_EXIT_RUNTIME=1 glue_stub.cpp
+
 ifeq ($(BUILD), debug)
 	OPTS = -O0 -g2
-	LINK_OPTS = -g4 --llvm-lto 0 -s NO_FILESYSTEM=1 -s NO_BROWSER=1 -s ASSERTIONS=2 --closure 0  -s DEMANGLE_SUPPORT=1 
+	LINK_OPTS += -g -s NO_FILESYSTEM=1 -s ASSERTIONS=2 -s DEMANGLE_SUPPORT=1
 else
 	OPTS = -Os
-	LINK_OPTS =  -O3 --llvm-lto 1 -s NO_FILESYSTEM=1 -s NO_BROWSER=1  --closure 1  --js-transform "python bundle.py"
+	LINK_OPTS += -O3 --llvm-lto 1 #--closure 1
 endif
 
 ifeq ($(VERSION), latest)
@@ -79,8 +81,7 @@ $(ACTIVE)/Box2D/Dynamics/Joints/b2WheelJoint.bc \
 $(ACTIVE)/Box2D/Rope/b2Rope.bc
 
 
-all: remove box2d.js
-	@echo $(ACTIVE)"_"$(BUILD)".js is ready"
+all: box2d.js box2d.wasm.js
 
 %.bc: %.cpp
 	$(CXX) $(OPTS) -I$(ACTIVE) $< -o $@
@@ -94,11 +95,12 @@ box2d_glue.cpp: $(ACTIVE).idl
 box2d_glue.h: box2d_glue.cpp
 
 box2d.js: box2d.bc box2d_glue.cpp box2d_glue.h
-	$(CXX) $(LINK_OPTS) -I$(ACTIVE) -s EXPORT_BINDINGS=1 -s RESERVED_FUNCTION_POINTERS=20 --post-js box2d_glue.js --memory-init-file 0 -s NO_EXIT_RUNTIME=1 glue_stub.cpp $< -o build/$(ACTIVE)_$(BUILD).js
+	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).js
+
+box2d.wasm.js: box2d.bc box2d_glue.cpp box2d_glue.h
+	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).wasm.js -s WASM=1
 
 clean: remove
 	rm -f $(OBJECTS)
-	
-remove:
 	rm -f box2d.bc box2d_bindings.cpp box2d_bindings.bc box2d.clean.h box2d_glue.js box2d_glue.cpp WebIDLGrammar.pkl parser.out
 
