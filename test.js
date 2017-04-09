@@ -1,4 +1,5 @@
-// js -m -n -e "load('box2d.js')" test.js
+// e.g.
+//  mozjs -e "load('Box2D_v2.2.1_min.wasm.js')" test.js
 
 Box2D().then(function(Box2D) {
   function clock() {

@@ -12,13 +12,13 @@ PYTHON=$(ENV) python
 VERSION := stable
 BUILD := min
 
-LINK_OPTS = -s MODULARIZE=1 -s 'EXPORT_NAME="Box2D"' -s NO_FILESYSTEM=1 -s EXPORT_BINDINGS=1 -s RESERVED_FUNCTION_POINTERS=20 --post-js box2d_glue.js --memory-init-file 0 -s NO_EXIT_RUNTIME=1 glue_stub.cpp
+LINK_OPTS = -s MODULARIZE=1 -s 'EXPORT_NAME="Box2D"' -s NO_FILESYSTEM=1 -s EXPORT_BINDINGS=1 -s RESERVED_FUNCTION_POINTERS=20 --post-js box2d_glue.js --memory-init-file 0 -s NO_EXIT_RUNTIME=1 glue_stub.cpp -s NO_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=[]
 
 ifeq ($(BUILD), debug)
 	OPTS = -O0 -g2
-	LINK_OPTS += -g -s NO_FILESYSTEM=1 -s ASSERTIONS=2 -s DEMANGLE_SUPPORT=1
+	LINK_OPTS += -g -s ASSERTIONS=2 -s DEMANGLE_SUPPORT=1
 else
-	OPTS = -Os
+	OPTS = -O3
 	LINK_OPTS += -O3 --llvm-lto 1 --closure 1
 endif
 
@@ -100,7 +100,7 @@ box2d.js: box2d.bc box2d_glue.cpp box2d_glue.h
 box2d.wasm.js: box2d.bc box2d_glue.cpp box2d_glue.h
 	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).wasm.js -s WASM=1
 
-clean: remove
+clean:
 	rm -f $(OBJECTS)
 	rm -f box2d.bc box2d_bindings.cpp box2d_bindings.bc box2d.clean.h box2d_glue.js box2d_glue.cpp WebIDLGrammar.pkl parser.out
 
