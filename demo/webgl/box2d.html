@@ -5,149 +5,150 @@
       <script>
         var Module = { TOTAL_MEMORY: 256*1024*1024 };
       </script>
-      <script src="../../build/Box2D_v2.2.1_min.js" type="text/javascript"></script>
+      <script src="Box2D_v2.2.1_min.js" type="text/javascript"></script>
       <style type="text/css">
         body { background-color: #ccc; }
       </style>
 
       <script type="text/javascript">
-        var startUp, restart;
-        (function() {
-          var s = window.location.search.substr(1);
-          var NUM = s.length > 1 ? +s : 500;
+        var restart;
+        function startUp() {
+          Box2D().then(function(Box2D) {
+            var s = window.location.search.substr(1);
+            var NUM = s.length > 1 ? +s : 200;
 
-          var NUMRANGE = [];
-          while (NUMRANGE.length < NUM) NUMRANGE.push(NUMRANGE.length+1);
-          var bodies = [null]; // Indexes start from 1
+            var NUMRANGE = [];
+            while (NUMRANGE.length < NUM) NUMRANGE.push(NUMRANGE.length+1);
+            var bodies = [null]; // Indexes start from 1
 
-          // Box2D-interfacing code
+            // Box2D-interfacing code
 
-          var gravity = new Box2D.b2Vec2(0.0, -10.0);
+            var gravity = new Box2D.b2Vec2(0.0, -10.0);
 
-          var world = new Box2D.b2World(gravity);
+            var world = new Box2D.b2World(gravity);
 
-          var bd_ground = new Box2D.b2BodyDef();
-          var ground = world.CreateBody(bd_ground);
+            var bd_ground = new Box2D.b2BodyDef();
+            var ground = world.CreateBody(bd_ground);
 
-          var shape0 = new Box2D.b2EdgeShape();
-          shape0.Set(new Box2D.b2Vec2(-40.0, -6.0), new Box2D.b2Vec2(40.0, -6.0));
-          ground.CreateFixture(shape0, 0.0);
+            var shape0 = new Box2D.b2EdgeShape();
+            shape0.Set(new Box2D.b2Vec2(-40.0, -6.0), new Box2D.b2Vec2(40.0, -6.0));
+            ground.CreateFixture(shape0, 0.0);
 
-          var size = 1.0;
-          var shape = new Box2D.b2PolygonShape();
-          shape.SetAsBox(size, size);
+            var size = 1.0;
+            var shape = new Box2D.b2PolygonShape();
+            shape.SetAsBox(size, size);
 
-          var ZERO = new Box2D.b2Vec2(0.0, 0.0);
-          var temp = new Box2D.b2Vec2(0.0, 0.0);
+            var ZERO = new Box2D.b2Vec2(0.0, 0.0);
+            var temp = new Box2D.b2Vec2(0.0, 0.0);
 
-          NUMRANGE.forEach(function(i) {
-            var bd = new Box2D.b2BodyDef();
-            bd.set_type(Box2D.b2_dynamicBody);
-            bd.set_position(ZERO);
-            var body = world.CreateBody(bd);
-            body.CreateFixture(shape, 5.0);
-
-            bodies.push(body);
-          });
-
-          function resetPositions() {
             NUMRANGE.forEach(function(i) {
-              var body = bodies[i];
-              temp.Set(25*(Math.random()-0.5), 2.0 + 1.5*i);
-              body.SetTransform(temp, 0.0);
-              body.SetLinearVelocity(ZERO);
-              body.SetAwake(1);
-              body.SetActive(1);
+              var bd = new Box2D.b2BodyDef();
+              bd.set_type(Box2D.b2_dynamicBody);
+              bd.set_position(ZERO);
+              var body = world.CreateBody(bd);
+              body.CreateFixture(shape, 5.0);
+
+              bodies.push(body);
             });
-          }
 
-          resetPositions();
+            function resetPositions() {
+              NUMRANGE.forEach(function(i) {
+                var body = bodies[i];
+                temp.Set(25*(Math.random()-0.5), 2.0 + 1.5*i);
+                body.SetTransform(temp, 0.0);
+                body.SetLinearVelocity(ZERO);
+                body.SetAwake(1);
+                body.SetActive(1);
+              });
+            }
 
-          function readObject(i, data) {
-            var body = bodies[i];
-            var bpos = body.GetPosition();
-            data.x = bpos.get_x();
-            data.y = bpos.get_y();
-            data.angle = body.GetAngle();
-          }
+            resetPositions();
 
-          var lastInactivity = Date.now();
-          function someInactive() {
-            var asleep = 0;
-            for (var i = 0; i < NUM; i++) {
-              if (!bodies[i+1].IsAwake()) {
-                asleep++;
-                if (asleep == 3) return true;
+            function readObject(i, data) {
+              var body = bodies[i];
+              var bpos = body.GetPosition();
+              data.x = bpos.get_x();
+              data.y = bpos.get_y();
+              data.angle = body.GetAngle();
+            }
+
+            var lastInactivity = Date.now();
+            function someInactive() {
+              var asleep = 0;
+              for (var i = 0; i < NUM; i++) {
+                if (!bodies[i+1].IsAwake()) {
+                  asleep++;
+                  if (asleep == 3) return true;
+                }
+              }
+              return false;
+            }
+
+            // Main demo code
+
+            var totalTime = 0;
+
+            var boxes = [];
+
+            var position = [0,0,0];
+
+var LAST = 0;
+            function simulate(dt) {
+              world.Step(dt, 2, 2);
+
+              var data = { x: 0, y: 0, angle: 0 };
+
+              // Read box2d data into JS objects
+              for (var i = 0; i < NUM; i++) {
+                readObject(i+1, data);
+                var renderObject = boxes[i];
+                renderObject.position[0] = data.x;
+                renderObject.position[1] = data.y;
+                renderObject.position[2] = 0;
+                renderObject.rotation = [0, 0, data.angle*180/Math.PI];
+              }
+
+              totalTime += dt;
+
+              if (someInactive() || totalTime >= 30) restart();
+            }
+
+            var fpsInfo = {
+              dts: 0,
+              num: 0,
+              lastHUD: Date.now(),
+              allNum: 0,
+              all: 0,
+            };
+
+            var outElement = null;
+            function showFPS(dt) {
+              if (!outElement) outElement = document.getElementById('out');
+              var now = Date.now();
+              fpsInfo.dts += dt;
+              fpsInfo.num++;
+              if (now - fpsInfo.lastHUD > 500) {
+                var curr = 1/(fpsInfo.dts/fpsInfo.num);
+                fpsInfo.allNum++;
+                var alpha = Math.min(1, 2/fpsInfo.allNum);
+                fpsInfo.all = alpha*curr + (1-alpha)*fpsInfo.all;
+                outElement.value = Math.round(curr) + ' / ' + Math.round(fpsInfo.all);
+                fpsInfo.lastHUD = now;
+                fpsInfo.dts = 0;
+                fpsInfo.num = 0;
               }
             }
-            return false;
-          }
 
-          // Main demo code
-
-          var totalTime = 0;
-
-          var boxes = [];
-
-          var position = [0,0,0];
-
-          function simulate(dt) {
-            world.Step(dt, 2, 2);
-
-            var data = { x: 0, y: 0, angle: 0 };
-
-            // Read box2d data into JS objects
-            for (var i = 0; i < NUM; i++) {
-              readObject(i+1, data);
-              var renderObject = boxes[i];
-              renderObject.position[0] = data.x;
-              renderObject.position[1] = data.y;
-              renderObject.position[2] = 0;
-              renderObject.rotation = [0, 0, data.angle*180/Math.PI];
+            restart = function() {
+              totalTime = 0;
+              resetPositions();
             }
 
-            totalTime += dt;
+            var FLOOR_SIZE = 100;
+            var FLOOR_HEIGHT = -56
 
-            if (someInactive() || totalTime >= 30) restart();
-          }
+            // CubicVR code
 
-          var fpsInfo = {
-            dts: 0,
-            num: 0,
-            lastHUD: Date.now(),
-            allNum: 0,
-            all: 0,
-          };
-
-          var outElement = null;
-          function showFPS(dt) {
-            if (!outElement) outElement = document.getElementById('out');
-            var now = Date.now();
-            fpsInfo.dts += dt;
-            fpsInfo.num++;
-            if (now - fpsInfo.lastHUD > 500) {
-              var curr = 1/(fpsInfo.dts/fpsInfo.num);
-              fpsInfo.allNum++;
-              var alpha = Math.min(1, 2/fpsInfo.allNum);
-              fpsInfo.all = alpha*curr + (1-alpha)*fpsInfo.all;
-              outElement.value = Math.round(curr) + ' / ' + Math.round(fpsInfo.all);
-              fpsInfo.lastHUD = now;
-              fpsInfo.dts = 0;
-              fpsInfo.num = 0;
-            }
-          }
-
-          restart = function() {
-            totalTime = 0;
-            resetPositions();
-          }
-
-          var FLOOR_SIZE = 100;
-          var FLOOR_HEIGHT = -56
-
-          // CubicVR code
-
-          startUp = function() {
             document.getElementById('info').innerHTML = '<b>Boxes: ' + NUM + '</b>';
 
             var canvas = document.getElementById("canvas");
@@ -225,8 +226,8 @@
               scene.render();
               showFPS(dt);
             });
-          }
-        })();
+          });
+        }
       </script>
     </head>
     <body onload="startUp()">
@@ -235,7 +236,7 @@
         <form>
           Boxes :
           <select name="boxes">
-            <option value="500" selected>(pick)</option>
+            <option value="200" selected>(pick)</option>
             <option value="10">10</option>
             <option value="50">50</option>
             <option value="100">100</option>
@@ -246,6 +247,7 @@
             <option value="1000">1000</option>
           </select>
           <input type="button" value="go!" onclick="window.location = window.location.toString().split('?')[0] + '?' + boxes.value;">
+          <a href="https://twitter.com/horse_js"><img src="js.png" style="width: 4em; margin-left: 300px"></a>
         </form>
         <canvas id="canvas" width="600" height="500"></canvas>
         <br><br>
