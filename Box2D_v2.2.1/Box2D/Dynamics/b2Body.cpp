@@ -407,6 +407,8 @@ void b2Body::SetTransform(const b2Vec2& position, float32 angle)
 		return;
 	}
 
+	SetAwake(true);
+
 	m_xf.q.Set(angle);
 	m_xf.p = position;
 
