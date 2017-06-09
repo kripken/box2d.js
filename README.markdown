@@ -52,8 +52,6 @@ R.U.B.E testbed
 
 The demo/rube_testbed folder contains the testbed with scenes which were exported from the R.U.B.E editor
 
-**Demo: http://argadnet.com/demo/rube_testbed/box2djs/index.php**
-
 Building
 --------
 
