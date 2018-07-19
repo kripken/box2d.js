@@ -84,7 +84,7 @@ $(ACTIVE)/Box2D/Rope/b2Rope.bc
 all: box2d.js box2d.wasm.js
 
 %.bc: %.cpp
-	$(CXX) $(OPTS) -I$(ACTIVE) $< -o $@
+	$(CXX) $(OPTS) -I$(ACTIVE) $< -o $@ -fno-exceptions -fno-rtti
 
 box2d.bc: $(OBJECTS)
 	$(CXX) $(OPTS) -I$(ACTIVE) -o $@ $(OBJECTS)
@@ -98,7 +98,7 @@ box2d.js: box2d.bc box2d_glue.cpp box2d_glue.h
 	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).js
 
 box2d.wasm.js: box2d.bc box2d_glue.cpp box2d_glue.h
-	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).wasm.js -s WASM=1
+	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).wasm.js -s WASM=1 -s ALLOW_MEMORY_GROWTH=1
 
 clean:
 	rm -f $(OBJECTS)
