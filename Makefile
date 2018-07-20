@@ -19,7 +19,7 @@ ifeq ($(BUILD), debug)
 	LINK_OPTS += -g -s ASSERTIONS=2 -s DEMANGLE_SUPPORT=1
 else
 	OPTS = -O3
-	LINK_OPTS += -O3 --llvm-lto 1 --closure 1
+	LINK_OPTS += -O3 --llvm-lto 1 --closure 1 -s IGNORE_CLOSURE_COMPILER_ERRORS=1
 endif
 
 ifeq ($(VERSION), latest)
