@@ -95,7 +95,7 @@ box2d_glue.cpp: $(ACTIVE).idl
 box2d_glue.h: box2d_glue.cpp
 
 box2d.js: box2d.bc box2d_glue.cpp box2d_glue.h
-	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).js
+	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).js -s WASM=0
 
 box2d.wasm.js: box2d.bc box2d_glue.cpp box2d_glue.h
 	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).wasm.js -s WASM=1 -s ALLOW_MEMORY_GROWTH=1
