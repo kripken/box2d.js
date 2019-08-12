@@ -19,7 +19,7 @@ ifeq ($(BUILD), debug)
 	LINK_OPTS += -g -s ASSERTIONS=2 -s DEMANGLE_SUPPORT=1
 else
 	OPTS = -O3
-	LINK_OPTS += -O3 --llvm-lto 1 --closure 1
+	LINK_OPTS += -O3 --llvm-lto 1 --closure 1 -s IGNORE_CLOSURE_COMPILER_ERRORS=1
 endif
 
 ifeq ($(VERSION), latest)
@@ -95,10 +95,10 @@ box2d_glue.cpp: $(ACTIVE).idl
 box2d_glue.h: box2d_glue.cpp
 
 box2d.js: box2d.bc box2d_glue.cpp box2d_glue.h
-	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).js
+	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).js -s WASM=0 -fno-rtti
 
 box2d.wasm.js: box2d.bc box2d_glue.cpp box2d_glue.h
-	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).wasm.js -s WASM=1 -s ALLOW_MEMORY_GROWTH=1
+	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).wasm.js -s WASM=1 -s ALLOW_MEMORY_GROWTH=1 -fno-rtti
 
 clean:
 	rm -f $(OBJECTS)
