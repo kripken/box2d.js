@@ -25,7 +25,7 @@ endif
 ifeq ($(VERSION), latest)
 	ACTIVE = $(LATEST)
 	OBJECTS = \
-	$(ACTIVE)/Box2D/Dynamics/Joints/b2MotorJoint.bc
+	$(ACTIVE)/Box2D/Dynamics/Joints/b2MotorJoint.o
 else ifeq ($(VERSION), stable)
 	ACTIVE = $(STABLE)
 else
@@ -34,59 +34,59 @@ endif
 
 
 OBJECTS += \
-$(ACTIVE)/Box2D/Collision/b2BroadPhase.bc \
-$(ACTIVE)/Box2D/Collision/b2CollideCircle.bc \
-$(ACTIVE)/Box2D/Collision/b2CollideEdge.bc \
-$(ACTIVE)/Box2D/Collision/b2CollidePolygon.bc \
-$(ACTIVE)/Box2D/Collision/b2Collision.bc \
-$(ACTIVE)/Box2D/Collision/b2Distance.bc \
-$(ACTIVE)/Box2D/Collision/b2DynamicTree.bc \
-$(ACTIVE)/Box2D/Collision/b2TimeOfImpact.bc \
-$(ACTIVE)/Box2D/Collision/Shapes/b2ChainShape.bc \
-$(ACTIVE)/Box2D/Collision/Shapes/b2CircleShape.bc \
-$(ACTIVE)/Box2D/Collision/Shapes/b2EdgeShape.bc \
-$(ACTIVE)/Box2D/Collision/Shapes/b2PolygonShape.bc \
-$(ACTIVE)/Box2D/Common/b2BlockAllocator.bc \
-$(ACTIVE)/Box2D/Common/b2Draw.bc \
-$(ACTIVE)/Box2D/Common/b2Math.bc \
-$(ACTIVE)/Box2D/Common/b2Settings.bc \
-$(ACTIVE)/Box2D/Common/b2StackAllocator.bc \
-$(ACTIVE)/Box2D/Common/b2Timer.bc \
-$(ACTIVE)/Box2D/Dynamics/b2Body.bc \
-$(ACTIVE)/Box2D/Dynamics/b2ContactManager.bc \
-$(ACTIVE)/Box2D/Dynamics/b2Fixture.bc \
-$(ACTIVE)/Box2D/Dynamics/b2Island.bc \
-$(ACTIVE)/Box2D/Dynamics/b2World.bc \
-$(ACTIVE)/Box2D/Dynamics/b2WorldCallbacks.bc \
-$(ACTIVE)/Box2D/Dynamics/Contacts/b2ChainAndCircleContact.bc \
-$(ACTIVE)/Box2D/Dynamics/Contacts/b2ChainAndPolygonContact.bc \
-$(ACTIVE)/Box2D/Dynamics/Contacts/b2CircleContact.bc \
-$(ACTIVE)/Box2D/Dynamics/Contacts/b2Contact.bc \
-$(ACTIVE)/Box2D/Dynamics/Contacts/b2ContactSolver.bc \
-$(ACTIVE)/Box2D/Dynamics/Contacts/b2EdgeAndCircleContact.bc \
-$(ACTIVE)/Box2D/Dynamics/Contacts/b2EdgeAndPolygonContact.bc \
-$(ACTIVE)/Box2D/Dynamics/Contacts/b2PolygonAndCircleContact.bc \
-$(ACTIVE)/Box2D/Dynamics/Contacts/b2PolygonContact.bc \
-$(ACTIVE)/Box2D/Dynamics/Joints/b2DistanceJoint.bc \
-$(ACTIVE)/Box2D/Dynamics/Joints/b2FrictionJoint.bc \
-$(ACTIVE)/Box2D/Dynamics/Joints/b2GearJoint.bc \
-$(ACTIVE)/Box2D/Dynamics/Joints/b2Joint.bc \
-$(ACTIVE)/Box2D/Dynamics/Joints/b2MouseJoint.bc \
-$(ACTIVE)/Box2D/Dynamics/Joints/b2PrismaticJoint.bc \
-$(ACTIVE)/Box2D/Dynamics/Joints/b2PulleyJoint.bc \
-$(ACTIVE)/Box2D/Dynamics/Joints/b2RevoluteJoint.bc \
-$(ACTIVE)/Box2D/Dynamics/Joints/b2RopeJoint.bc \
-$(ACTIVE)/Box2D/Dynamics/Joints/b2WeldJoint.bc \
-$(ACTIVE)/Box2D/Dynamics/Joints/b2WheelJoint.bc \
-$(ACTIVE)/Box2D/Rope/b2Rope.bc
+$(ACTIVE)/Box2D/Collision/b2BroadPhase.o \
+$(ACTIVE)/Box2D/Collision/b2CollideCircle.o \
+$(ACTIVE)/Box2D/Collision/b2CollideEdge.o \
+$(ACTIVE)/Box2D/Collision/b2CollidePolygon.o \
+$(ACTIVE)/Box2D/Collision/b2Collision.o \
+$(ACTIVE)/Box2D/Collision/b2Distance.o \
+$(ACTIVE)/Box2D/Collision/b2DynamicTree.o \
+$(ACTIVE)/Box2D/Collision/b2TimeOfImpact.o \
+$(ACTIVE)/Box2D/Collision/Shapes/b2ChainShape.o \
+$(ACTIVE)/Box2D/Collision/Shapes/b2CircleShape.o \
+$(ACTIVE)/Box2D/Collision/Shapes/b2EdgeShape.o \
+$(ACTIVE)/Box2D/Collision/Shapes/b2PolygonShape.o \
+$(ACTIVE)/Box2D/Common/b2BlockAllocator.o \
+$(ACTIVE)/Box2D/Common/b2Draw.o \
+$(ACTIVE)/Box2D/Common/b2Math.o \
+$(ACTIVE)/Box2D/Common/b2Settings.o \
+$(ACTIVE)/Box2D/Common/b2StackAllocator.o \
+$(ACTIVE)/Box2D/Common/b2Timer.o \
+$(ACTIVE)/Box2D/Dynamics/b2Body.o \
+$(ACTIVE)/Box2D/Dynamics/b2ContactManager.o \
+$(ACTIVE)/Box2D/Dynamics/b2Fixture.o \
+$(ACTIVE)/Box2D/Dynamics/b2Island.o \
+$(ACTIVE)/Box2D/Dynamics/b2World.o \
+$(ACTIVE)/Box2D/Dynamics/b2WorldCallbacks.o \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2ChainAndCircleContact.o \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2ChainAndPolygonContact.o \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2CircleContact.o \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2Contact.o \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2ContactSolver.o \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2EdgeAndCircleContact.o \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2EdgeAndPolygonContact.o \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2PolygonAndCircleContact.o \
+$(ACTIVE)/Box2D/Dynamics/Contacts/b2PolygonContact.o \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2DistanceJoint.o \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2FrictionJoint.o \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2GearJoint.o \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2Joint.o \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2MouseJoint.o \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2PrismaticJoint.o \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2PulleyJoint.o \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2RevoluteJoint.o \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2RopeJoint.o \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2WeldJoint.o \
+$(ACTIVE)/Box2D/Dynamics/Joints/b2WheelJoint.o \
+$(ACTIVE)/Box2D/Rope/b2Rope.o
 
 
 all: box2d.js box2d.wasm.js
 
-%.bc: %.cpp
+%.o: %.cpp
 	$(CXX) $(OPTS) -I$(ACTIVE) $< -o $@ -fno-exceptions -fno-rtti
 
-box2d.bc: $(OBJECTS)
+box2d.o: $(OBJECTS)
 	$(CXX) $(OPTS) -I$(ACTIVE) -o $@ $(OBJECTS)
 
 box2d_glue.cpp: $(ACTIVE).idl
@@ -94,13 +94,13 @@ box2d_glue.cpp: $(ACTIVE).idl
 
 box2d_glue.h: box2d_glue.cpp
 
-box2d.js: box2d.bc box2d_glue.cpp box2d_glue.h
+box2d.js: box2d.o box2d_glue.cpp box2d_glue.h
 	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).js -s WASM=0 -fno-rtti
 
-box2d.wasm.js: box2d.bc box2d_glue.cpp box2d_glue.h
+box2d.wasm.js: box2d.o box2d_glue.cpp box2d_glue.h
 	$(CXX) $(LINK_OPTS) -I$(ACTIVE) $< -o build/$(ACTIVE)_$(BUILD).wasm.js -s WASM=1 -s ALLOW_MEMORY_GROWTH=1 -fno-rtti
 
 clean:
 	rm -f $(OBJECTS)
-	rm -f box2d.bc box2d_bindings.cpp box2d_bindings.bc box2d.clean.h box2d_glue.js box2d_glue.cpp WebIDLGrammar.pkl parser.out
+	rm -f box2d.o box2d_bindings.cpp box2d_bindings.o box2d.clean.h box2d_glue.js box2d_glue.cpp WebIDLGrammar.pkl parser.out
 
