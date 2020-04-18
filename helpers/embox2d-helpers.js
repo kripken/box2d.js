@@ -42,11 +42,11 @@ function scaledVec2(vec, scale) {
 // http://stackoverflow.com/questions/12792486/emscripten-bindings-how-to-create-an-accessible-c-c-array-from-javascript
 function createChainShape(vertices, closedLoop) {
     var shape = new Box2D.b2ChainShape();            
-    var buffer = Box2D.allocate(vertices.length * 8, 'float', Box2D.ALLOC_STACK);
+    var buffer = Box2D._malloc(vertices.length * 8);
     var offset = 0;
     for (var i=0;i<vertices.length;i++) {
-        Box2D.setValue(buffer+(offset), vertices[i].get_x(), 'float'); // x
-        Box2D.setValue(buffer+(offset+4), vertices[i].get_y(), 'float'); // y
+        Box2D.HEAPF32[buffer + offset >> 2] = vertices[i].get_x();
+        Box2D.HEAPF32[buffer + (offset + 4) >> 2] = vertices[i].get_y();
         offset += 8;
     }            
     var ptr_wrapped = Box2D.wrapPointer(buffer, Box2D.b2Vec2);
@@ -59,11 +59,11 @@ function createChainShape(vertices, closedLoop) {
 
 function createPolygonShape(vertices) {
     var shape = new Box2D.b2PolygonShape();            
-    var buffer = Box2D.allocate(vertices.length * 8, 'float', Box2D.ALLOC_STACK);
+    var buffer = Box2D._malloc(vertices.length * 8);
     var offset = 0;
     for (var i=0;i<vertices.length;i++) {
-        Box2D.setValue(buffer+(offset), vertices[i].get_x(), 'float'); // x
-        Box2D.setValue(buffer+(offset+4), vertices[i].get_y(), 'float'); // y
+        Box2D.HEAPF32[buffer + offset >> 2] = vertices[i].get_x();
+        Box2D.HEAPF32[buffer + (offset + 4) >> 2] = vertices[i].get_y();
         offset += 8;
     }            
     var ptr_wrapped = Box2D.wrapPointer(buffer, Box2D.b2Vec2);
