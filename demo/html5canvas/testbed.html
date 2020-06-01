@@ -21,9 +21,9 @@
         <script type="text/javascript">  
             var Box2D;
             if (!Box2D) Box2D = (typeof Box2D !== 'undefined' ? Box2D : null) || Module;
-            var Box2DConstructor = Box2D
-            Box2D = Box2D()
-            Module = Box2D
+            var Box2DConstructor = Box2D;
+            Box2D = Box2D();
+            Module = Box2D;
             window.onload = function() {
                 using(Box2D, "b2.+")
                 init();
