@@ -12,7 +12,7 @@ PYTHON=$(ENV) python
 VERSION := stable
 BUILD := min
 
-LINK_OPTS = -s MODULARIZE=1 -s 'EXPORT_NAME="Box2D"' -s NO_FILESYSTEM=1 -s EXPORT_BINDINGS=1 -s RESERVED_FUNCTION_POINTERS=20 --post-js box2d_glue.js --memory-init-file 0 -s NO_EXIT_RUNTIME=1 glue_stub.cpp -s NO_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=[]
+LINK_OPTS = -s MODULARIZE=1 -s 'EXPORT_NAME="Box2D"' -s NO_FILESYSTEM=1 -s ENVIRONMENT=web -s EXPORT_BINDINGS=1 -s RESERVED_FUNCTION_POINTERS=20 --post-js box2d_glue.js --memory-init-file 0 -s NO_EXIT_RUNTIME=1 glue_stub.cpp -s NO_FILESYSTEM=1 -s EXPORTED_RUNTIME_METHODS=[]
 
 ifeq ($(BUILD), debug)
 	OPTS = -O0 -g2
