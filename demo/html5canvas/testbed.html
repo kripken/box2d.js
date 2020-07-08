@@ -20,15 +20,17 @@
         
         <script type="text/javascript">  
             var Box2D;
-            if (!Box2D) Box2D = (typeof Box2D !== 'undefined' ? Box2D : null) || Module;
-            Box2D = Box2D();
-            Module = Box2D;
-            window.onload = function() {
-                using(Box2D, "b2.+")
-                init();
-                changeTest();
-                animate();
-            };        
+            if (!Box2D) Box2D = (typeof Box2D !== 'undefined' ? Box2D : null) || Module; 
+            Box2D().then(r => {
+                Box2D = r;
+                Module = Box2D;
+                window.onload = () => {
+                    using(Box2D, "b2.+");
+                    init();
+                    changeTest();
+                    animate();
+                };
+            });        
         </script>
         
     </head>
